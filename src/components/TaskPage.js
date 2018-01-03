@@ -2,7 +2,7 @@ import React, {Component}from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import {fetchTasks, deleteTask} from '../actions/tasks';
+import { fetchTasks, addTask, deleteTask } from '../actions/tasks';
 import moment from 'moment';
 
 import Button from 'material-ui/Button';
@@ -28,7 +28,7 @@ const styles = theme => ({
     },
 });
 
-class Jaahas extends Component{
+class TaskPage extends Component{
     componentWillMount() {
         this.props.fetchTasks();
     }
@@ -41,6 +41,18 @@ class Jaahas extends Component{
         return moment(date).format('dddd');
     }
 
+    onAddTaskClick() {
+        const date = new Date();
+        const task = {
+            name: 'supacool task',
+            start_date: date,
+            end_date: date,
+            break_time: '09:00:00',
+            total_hours: '00:00:00',
+        };
+        this.props.addTask(task);
+    }
+
     render(){
         const { tasks, classes } = this.props;
         console.log(tasks);
@@ -48,13 +60,11 @@ class Jaahas extends Component{
         return (
             <div style={{ padding: 8 }}>
                 <Button
-                    onClick={this.fetchTasks}
-                    label="Matias"
-                    labelPosition="before"
-                    primary={true}
+                    onClick={() => this.onAddTaskClick()}
+                    color='primary'
                     classes={{ root: classes.testButton }}
                 >
-                    <Close />
+                    Add new task
                 </Button>
                 <Divider />
                 <Grid container>
@@ -72,12 +82,9 @@ class Jaahas extends Component{
                     // end_date
                     // break_time
                     // total_hours
-                    <div>
+                    <div key={task.task_id}>
                         <div className={classes.weekDay}>{this.getWeekDay(task.start_date)}</div>
-                        <Grid
-                            container
-                            key={task.task_id}
-                        >
+                        <Grid container>
                             <Grid item xs>{task.name}</Grid>
                             <Grid item xs />
                             <Grid item xs>{this.formatHours(task.start_date)}</Grid>
@@ -86,7 +93,7 @@ class Jaahas extends Component{
                             <Grid item xs>{task.total_hours}</Grid>
                             <Grid item xs>
                                 <IconButton
-                                    onClick={this.props.deleteTask(task.task_id)}
+                                    onClick={() => this.props.deleteTask(task.task_id)}
                                     classes={{ root: classes.testButton }}
                                 >
                                   <Close />
@@ -100,10 +107,12 @@ class Jaahas extends Component{
     }
 }
 
-Jaahas.propTypes = {
+TaskPage.propTypes = {
     tasks: PropTypes.array.isRequired,
     classes: PropTypes.object.isRequired,
-    // function: PropTypes.func.isRequired,
+    fetchTasks: PropTypes.func.isRequired,
+    addTask: PropTypes.func.isRequired,
+    deleteTask: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -113,9 +122,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchTasks: () => dispatch(fetchTasks()),
-        deleteTask: (id) => dispatch(deleteTask(id))
+        addTask: (task) => dispatch(addTask(task)),
+        deleteTask: (id) => dispatch(deleteTask(id)),
     }
 }
 
 // export default connect(mapStateToProps, mapDispatchToProps) (Jaahas);
-export default withStyles(styles, { withThem: true })(connect(mapStateToProps, mapDispatchToProps)(Jaahas));
+export default withStyles(styles, { withThem: true })(connect(mapStateToProps, mapDispatchToProps)(TaskPage));

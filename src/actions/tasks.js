@@ -13,9 +13,21 @@ export const fetchTasks = () => {
     }  
 }
 
+export const addTask = (task) => {
+    return dispatch => {
+        axios.post('/tasks/', (task))
+            .then(response => {
+                dispatch({
+                    type: actionTypes.ADD_TASK,
+                    payload: response.data
+                })
+        });
+    }  
+}
+
 export const deleteTask = (id) => {
     return dispatch => {
-        axios.delete('/tasksdel/', {id:id})
+        axios.delete(`/tasks/${id}`)
             .then(response => {
                 dispatch({
                     type: actionTypes.DELETE_TASK,

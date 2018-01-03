@@ -5,7 +5,7 @@ import './App.css';
 
 import { blue } from 'material-ui/colors';
 
-import Jaahas from './components/Jaahas';
+import TaskPage from './components/TaskPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -36,7 +36,7 @@ class App extends Component {
           <p className="App-intro">
             To get started, edit <code>src/App.js</code> and save to reload.
           </p>
-          <Jaahas />
+          <TaskPage />
         </div>
       </MuiThemeProvider>
     );

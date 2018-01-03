@@ -1,12 +1,17 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-    tasks: null
+    tasks: []
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.FETCH_TASKS:
+            return state = {
+                ...state,
+                tasks: action.payload
+            };
+        case actionTypes.ADD_TASK:
             return state = {
                 ...state,
                 tasks: action.payload
