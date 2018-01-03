@@ -3,11 +3,17 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import axios from 'axios';
+import moment from 'moment';
+
 
 class Jaahas extends Component{
     state = {
         users: null,
         tasks: null
+    }
+
+    componentWillMount() {
+        this.fetchTasks();
     }
 
     fetchUsers = () => {
@@ -28,6 +34,14 @@ class Jaahas extends Component{
             });
     }
 
+    formatHours(date) {
+        return moment(date).format('hh:mm');
+    }
+
+    getWeekDay(date) {
+        return moment(date).format('dddd');
+    }
+
     render(){
         const style = {
             margin: 12,
@@ -44,7 +58,24 @@ class Jaahas extends Component{
 
         if (this.state.tasks !== null) {
             tasks = this.state.tasks.map(task => {
-                return (<li key={task.name}>{task.name}</li>)
+                // name
+                // start_date
+                // end_date
+                // break_time
+                // total_hours
+                const taskEl = (
+                    <div>
+                        <div>{this.getWeekDay(task.start_date)}</div>
+                        <span>
+                            <span style={{ margin: 5 }}>{task.name}</span>
+                            <span style={{ margin: 5 }}>{this.formatHours(task.start_date)}</span>
+                            <span style={{ margin: 5 }}>{this.formatHours(task.end_date)}</span>
+                            <span style={{ margin: 5 }}>{task.break_time}</span>
+                            <span style={{ margin: 5 }}>{task.total_hours}</span>
+                        </span>
+                    </div>
+                );
+                return (<li key={task.name}>{taskEl}</li>);
             })
         }
 
