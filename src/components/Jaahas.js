@@ -1,20 +1,14 @@
 import React, {Component}from 'react';
+import {connect} from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import axios from 'axios';
 import moment from 'moment';
 
+import {fetchTasks} from '../actions/tasks';
 
 class Jaahas extends Component{
-    state = {
-        users: null,
-        tasks: null
-    }
-
-    componentWillMount() {
-        this.fetchTasks();
-    }
 
     fetchUsers = () => {
         axios.get('/users')
@@ -25,13 +19,17 @@ class Jaahas extends Component{
             });
     }
 
-    fetchTasks = () => {
+    /* fetchTasks = () => {
         axios.get('/tasks')
             .then(response => {
                 this.setState({
                     tasks: response.data
                 });
             });
+    } */
+
+    componentWillMount() {
+        this.props.fetchTasks();
     }
 
     formatHours(date) {
@@ -47,17 +45,10 @@ class Jaahas extends Component{
             margin: 12,
         };
 
-        let users = null;
         let tasks = null;
 
-        if (this.state.users !== null) {
-            users = this.state.users.map(user => {
-                return (<li key={user.email}>{user.email}</li>)
-            })
-        }
-
-        if (this.state.tasks !== null) {
-            tasks = this.state.tasks.map(task => {
+        if (this.props.tasks !== null) {
+            tasks = this.props.tasks.map(task => {
                 // name
                 // start_date
                 // end_date
@@ -92,9 +83,6 @@ class Jaahas extends Component{
                     <FontIcon className="material-icons">announcement</FontIcon>
                 </IconButton>
                 <ul>
-                    {users}
-                </ul>
-                <ul>
                     {tasks}
                 </ul>
             </div>
@@ -102,4 +90,14 @@ class Jaahas extends Component{
     }
 }
 
-export default Jaahas;
+const mapStateToProps = (state) => ({
+    tasks: state.tasksStore.tasks
+})
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchTasks: () => dispatch(fetchTasks())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Jaahas);

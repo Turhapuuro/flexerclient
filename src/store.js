@@ -3,6 +3,7 @@ import {applyMiddleware, createStore} from 'redux';
 import {createFilter} from 'redux-persist-transform-filter';
 import {persistReducer, persistStore} from 'redux-persist';
 import {routerMiddleware} from 'react-router-redux';
+import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 
 export default (history) => {
@@ -23,7 +24,8 @@ export default (history) => {
     const store = createStore(
         reducer, {},
         applyMiddleware(
-            routerMiddleware(history)
+            routerMiddleware(history),
+            thunk
         )
     );
 
