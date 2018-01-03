@@ -12,3 +12,15 @@ export const fetchTasks = () => {
         });
     }  
 }
+
+export const deleteTask = (id) => {
+    return dispatch => {
+        axios.delete('/tasksdel/', {id:id})
+            .then(response => {
+                dispatch({
+                    type: actionTypes.DELETE_TASK,
+                    payload: response.data
+                })
+            })
+    }
+}

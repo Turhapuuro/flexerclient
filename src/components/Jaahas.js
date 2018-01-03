@@ -2,10 +2,11 @@ import React, {Component}from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import {fetchTasks} from '../actions/tasks';
+import {fetchTasks, deleteTask} from '../actions/tasks';
 import moment from 'moment';
 
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
 import Close from 'material-ui-icons/Close';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
@@ -63,6 +64,7 @@ class Jaahas extends Component{
                     <Grid item xs>End</Grid>
                     <Grid item xs>Break</Grid>
                     <Grid item xs>Hours</Grid>
+                    <Grid item xs></Grid>
                 </Grid>
                 {tasks && tasks.map(task => (
                     // name
@@ -74,7 +76,7 @@ class Jaahas extends Component{
                         <div className={classes.weekDay}>{this.getWeekDay(task.start_date)}</div>
                         <Grid
                             container
-                            key={task.name}
+                            key={task.task_id}
                         >
                             <Grid item xs>{task.name}</Grid>
                             <Grid item xs />
@@ -82,6 +84,14 @@ class Jaahas extends Component{
                             <Grid item xs>{this.formatHours(task.end_date)}</Grid>
                             <Grid item xs>{task.break_time}</Grid>
                             <Grid item xs>{task.total_hours}</Grid>
+                            <Grid item xs>
+                                <IconButton
+                                    onClick={this.props.deleteTask(task.task_id)}
+                                    classes={{ root: classes.testButton }}
+                                >
+                                  <Close />
+                                </IconButton>
+                            </Grid>
                         </Grid>
                     </div>
                 ))}
@@ -102,7 +112,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchTasks: () => dispatch(fetchTasks())
+        fetchTasks: () => dispatch(fetchTasks()),
+        deleteTask: (id) => dispatch(deleteTask(id))
     }
 }
 
