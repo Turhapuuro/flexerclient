@@ -47,14 +47,21 @@ const styles = theme => ({
 });
 
 class TaskPage extends Component {
-    state = {
-        task: {
-            name: '',
-            start_date: '',
-            end_date: '',
-            break_time: '00:00',
-            total_hours: '00:00',
-        }
+    constructor() {
+        super();
+
+        this.state = {
+            task: {
+                name: 'pottu',
+                date: '',
+                start: '',
+                end: '',
+                break: '00:00',
+                total: '00:00',
+            },
+        };
+
+        this.handleTaskFieldChange = this.handleTaskFieldChange.bind(this);
     }
 
     componentWillMount() {
@@ -62,7 +69,7 @@ class TaskPage extends Component {
     }
 
     formatHours(date) {
-        return moment(date).format('hh:mm');
+        return moment(date).format('HH:mm');
     }
 
     getWeekDay(date) {
@@ -70,7 +77,10 @@ class TaskPage extends Component {
     }
 
     handleTaskFieldChange(key, value) {
-
+        const { task } = this.state;
+        task[key] = value;
+        console.log(task[key]);
+        this.setState({ task });
     }
 
     renderField(key, placeholder, colSize) {
@@ -83,23 +93,47 @@ class TaskPage extends Component {
                     placeholder={placeholder}
                     classes={{ root: classes.taskField }}
                     value={this.state.task[key]}
-                    onChange={(e, value) => this.handleTaskFieldChange(key, value)}
+                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                     margin="normal"
                 />
             </Grid>
         );
     }
 
-    onAddTaskClick() {
+    getHoursAndMinutes(timeString) {
+        const hours = parseInt(timeString.substring(0, 2), 10);
+        const minutes = parseInt(timeString.substring(3, 5), 10);
+        return { hours, minutes };
+    }
+
+    getDateTime(timeString) {
+        // Expected timeString format 'hh:mm'
+        // Does not handle time in format 1:00 yet.
+        const { hours, minutes } = this.getHoursAndMinutes(timeString);
         const date = new Date();
-        const task = {
-            name: 'supacool task',
-            start_date: date,
-            end_date: date,
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(0);
+        return date;
+    }
+
+    onAddTaskClick() {
+        const { start, end, name } = this.state.task;
+
+        // Expected API date format "2018-01-04T16:44:14.051000Z"
+        const start_date = this.getDateTime(start);
+        const end_date = this.getDateTime(end);
+        console.log(start_date);
+
+        const apiTask = {
+            name,
+            start_date,
+            end_date,
             break_time: '09:00',
             total_hours: '00:00',
         };
-        this.props.addTask(task);
+
+        this.props.addTask(apiTask);
     }
 
     render(){
