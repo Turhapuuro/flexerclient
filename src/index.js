@@ -20,7 +20,3 @@ ReactDOM.render((
         </ConnectedRouter>
     </Provider>), document.getElementById('app'));
 registerServiceWorker();
-
-/* ReactDOM.render(<App />, document.getElementById('app'));
-registerServiceWorker();
- */

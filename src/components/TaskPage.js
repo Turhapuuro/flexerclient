@@ -1,7 +1,7 @@
 import React, {Component}from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { fetchTasks, addTask, deleteTask } from '../actions/tasks';
+import { fetchTasks, addTask, editTask, deleteTask } from '../actions/tasks';
 import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 
@@ -13,8 +13,13 @@ import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 
 import { drawerWidth } from './Navigation';
-import { blue, green, grey, red } from 'material-ui/colors';
+import { blue, green, grey, red, yellow } from 'material-ui/colors';
 
+
+const gridContainer = {
+    width: '100%',
+    margin: 0,
+};
 
 const styles = theme => ({
     pageFrame: {
@@ -29,6 +34,9 @@ const styles = theme => ({
     addButton: {
         color: green[500],
     },
+    saveButton: {
+        color: green[500],
+    },
     deleteButton: {
         color: red[500],
         height: 20,
@@ -38,8 +46,17 @@ const styles = theme => ({
         textAlign: 'left',
     },
     gridContainer: {
-        width: '100%',
-        margin: 0,
+        ...gridContainer,
+    },
+    taskGridContainer: {
+        ...gridContainer,
+        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: grey[100],
+        },
+        '&.active': {
+            backgroundColor: yellow[100],
+        }
     },
     taskField: {
         marginTop: 0,
@@ -59,9 +76,12 @@ class TaskPage extends Component {
                 break: '00:00',
                 total: '00:00',
             },
+            editableTask: null,
         };
 
         this.handleTaskFieldChange = this.handleTaskFieldChange.bind(this);
+        this.toggleTaskEdit = this.toggleTaskEdit.bind(this);
+        this.onTaskSaveClick = this.onTaskSaveClick.bind(this);
     }
 
     componentWillMount() {
@@ -76,27 +96,37 @@ class TaskPage extends Component {
         return moment(date).format('dddd');
     }
 
-    handleTaskFieldChange(key, value) {
-        const { task } = this.state;
-        task[key] = value;
-        this.setState({ task });
-        if (['start', 'end'].includes(key)) {
-            this.updateTotalHours();
+    handleTaskFieldChange(key, value, isEditField) {
+        if (isEditField) {
+            const { editableTask } = this.state;
+            editableTask[key] = value;
+            this.setState({ editableTask });
+        } else {
+            const { task } = this.state;
+            task[key] = value;
+            this.setState({ task });
+            if (['start', 'end'].includes(key)) {
+                this.updateTotalHours();
+            }
         }
     }
 
-    renderField(key, placeholder, colSize) {
+    renderField(key, placeholder, colSize = true, isEditField) {
         const { classes } = this.props;
+        const { task, editableTask } = this.state;
+
+        const value = isEditField ? editableTask[key] : task[key];
 
         return (
-            <Grid item xs={colSize || true}>
+            <Grid item xs={colSize}>
                 <TextField
                     name={key}
                     placeholder={placeholder}
                     classes={{ root: classes.taskField }}
-                    value={this.state.task[key]}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                    value={value}
+                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value, isEditField)}
                     margin="normal"
+                    multiline={true}
                 />
             </Grid>
         );
@@ -128,10 +158,10 @@ class TaskPage extends Component {
             const milliseconds = Math.abs(endDate - startDate);
             const tempTime = moment.duration(milliseconds);
             if (milliseconds) {
-                console.log(milliseconds);
-                total = tempTime.hours() + ':'  + tempTime.minutes();
+                const hours = tempTime.hours();
+                const minutes = tempTime.minutes();
+                total = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
             }
-            console.log(total);
         }
         this.handleTaskFieldChange('total', total);
     }
@@ -143,15 +173,83 @@ class TaskPage extends Component {
         const start_date = this.getDateTime(start);
         const end_date = this.getDateTime(end);
 
-        const apiTask = {
+        this.props.addTask({
             name,
             start_date,
             end_date,
-            break_time: '09:00',
+            break_time: '00:00',
             total_hours: total,
-        };
+        });
+    }
 
-        this.props.addTask(apiTask);
+    onTaskSaveClick() {
+        const { editableTask } = this.state;
+        const apiTask = editableTask;
+
+        this.props.editTask(apiTask);
+        this.toggleTaskEdit(null);
+    }
+
+    toggleTaskEdit(editableTask) {
+        this.setState({ editableTask });
+    }
+
+    renderTaskRow(task, classes) {
+        const { editableTask } = this.state;
+        if (editableTask && editableTask.task_id === task.task_id) {
+            return (
+                <Grid
+                    container
+                    className={classes.taskGridContainer + ' active'}
+                >
+                    {this.renderField('name', 'task name', 2, true)}
+                    <Grid item xs={2} />
+                    <Grid item xs>{this.formatHours(task.start_date)}</Grid>
+                    <Grid item xs>{this.formatHours(task.end_date)}</Grid>
+                    <Grid item xs>{task.break_time}</Grid>
+                    <Grid item xs>{task.total_hours}</Grid>
+                    <Grid item xs>
+                        <Button
+                            classes={{ root: classes.addButton }}
+                            onClick={() => this.onTaskSaveClick()}
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                    <Grid item xs>
+                        <IconButton
+                            classes={{ root: classes.deleteButton }}
+                            onClick={() => this.props.deleteTask(task.task_id)}
+                        >
+                            <Close />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            );
+        }
+        return (
+            <Grid
+                container
+                className={classes.taskGridContainer}
+                onClick={() => this.toggleTaskEdit(task)}
+            >
+                <Grid item xs={2}>{task.name}</Grid>
+                <Grid item xs={2} />
+                <Grid item xs>{this.formatHours(task.start_date)}</Grid>
+                <Grid item xs>{this.formatHours(task.end_date)}</Grid>
+                <Grid item xs>{task.break_time}</Grid>
+                <Grid item xs>{task.total_hours}</Grid>
+                <Grid item xs />
+                <Grid item xs>
+                    <IconButton
+                        classes={{ root: classes.deleteButton }}
+                        onClick={() => this.props.deleteTask(task.task_id)}
+                    >
+                        <Close />
+                    </IconButton>
+                </Grid>
+            </Grid>
+        );
     }
 
     render(){
@@ -180,8 +278,6 @@ class TaskPage extends Component {
                         <Button
                             classes={{ root: classes.addButton }}
                             onClick={() => this.onAddTaskClick()}
-                            color='primary'
-                            type='submit'
                         >
                             Add
                         </Button>
@@ -191,22 +287,7 @@ class TaskPage extends Component {
                 {tasks && tasks.map((task) => (
                     <div key={task.task_id}>
                         <div className={classes.weekDay}>{this.getWeekDay(task.start_date)}</div>
-                        <Grid container className={classes.gridContainer}>
-                            <Grid item xs={2}>{task.name}</Grid>
-                            <Grid item xs={2} />
-                            <Grid item xs>{this.formatHours(task.start_date)}</Grid>
-                            <Grid item xs>{this.formatHours(task.end_date)}</Grid>
-                            <Grid item xs>{task.break_time}</Grid>
-                            <Grid item xs>{task.total_hours}</Grid>
-                            <Grid item xs>
-                                <IconButton
-                                    onClick={() => this.props.deleteTask(task.task_id)}
-                                    classes={{ root: classes.deleteButton }}
-                                >
-                                    <Close />
-                                </IconButton>
-                            </Grid>
-                        </Grid>
+                        {this.renderTaskRow(task, classes)}
                     </div>
                 ))}
             </div>
@@ -230,6 +311,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchTasks: () => dispatch(fetchTasks()),
         addTask: (task) => dispatch(addTask(task)),
+        editTask: (task) => dispatch(editTask(task)),
         deleteTask: (id) => dispatch(deleteTask(id)),
     }
 }

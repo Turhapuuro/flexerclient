@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
     tasks: []
-}
+};
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {

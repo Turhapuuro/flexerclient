@@ -27,7 +27,7 @@ export const addTask = (task) => {
 
 export const editTask = (task) => {
     return dispatch => {
-        axios.post(`/tasks/${task.task_id}`, (task))
+        axios.put(`/tasks/${task.task_id}/`, (task))
             .then(response => {
                 dispatch({
                     type: actionTypes.EDIT_TASK,
