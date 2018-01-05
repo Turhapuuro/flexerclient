@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import { fetchTasks, addTask, editTask, deleteTask } from '../actions/tasks';
 import { withStyles } from 'material-ui/styles';
+import _ from 'lodash';
 import moment from 'moment';
 
 import Button from 'material-ui/Button';
@@ -12,8 +13,10 @@ import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 
+import DeleteButton from './DeleteButton';
+
 import { drawerWidth } from './Navigation';
-import { blue, green, grey, red, yellow } from 'material-ui/colors';
+import { blue, green, grey, yellow } from 'material-ui/colors';
 
 
 const gridContainer = {
@@ -26,21 +29,20 @@ const styles = theme => ({
         width: `calc(100% - ${drawerWidth}px)`,
         float: 'right',
     },
+    taskAddingGridWrapper: {
+        padding: 10,
+        borderBottom: `1px solid ${grey[300]}`,
+        boxShadow: `${grey[400]} 1px 1px 5px`,
+    },
     listElement: {
         backgroundColor: blue[500],
         borderBottom: `1px solid ${grey[300]}`,
-        // margin: '0 -8px',
     },
     addButton: {
         color: green[500],
     },
     saveButton: {
         color: green[500],
-    },
-    deleteButton: {
-        color: red[500],
-        height: 20,
-        width: 20,
     },
     weekDay: {
         textAlign: 'left',
@@ -51,6 +53,7 @@ const styles = theme => ({
     taskGridContainer: {
         ...gridContainer,
         cursor: 'pointer',
+        height: 62,
         '&:hover': {
             backgroundColor: grey[100],
         },
@@ -58,9 +61,13 @@ const styles = theme => ({
             backgroundColor: yellow[100],
         }
     },
+    weekDayBlock: {
+        padding: 10,
+        borderBottom: `1px solid ${grey[300]}`,
+    },
     taskField: {
         marginTop: 0,
-    }
+    },
 });
 
 class TaskPage extends Component {
@@ -156,8 +163,9 @@ class TaskPage extends Component {
             const startDate = this.getDateTime(start);
             const endDate = this.getDateTime(end);
             const milliseconds = Math.abs(endDate - startDate);
-            const tempTime = moment.duration(milliseconds);
+
             if (milliseconds) {
+                const tempTime = moment.duration(milliseconds);
                 const hours = tempTime.hours();
                 const minutes = tempTime.minutes();
                 total = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
@@ -217,12 +225,7 @@ class TaskPage extends Component {
                         </Button>
                     </Grid>
                     <Grid item xs>
-                        <IconButton
-                            classes={{ root: classes.deleteButton }}
-                            onClick={() => this.props.deleteTask(task.task_id)}
-                        >
-                            <Close />
-                        </IconButton>
+                        <DeleteButton onClick={() => this.props.deleteTask(task.task_id)} />
                     </Grid>
                 </Grid>
             );
@@ -241,53 +244,67 @@ class TaskPage extends Component {
                 <Grid item xs>{task.total_hours}</Grid>
                 <Grid item xs />
                 <Grid item xs>
-                    <IconButton
-                        classes={{ root: classes.deleteButton }}
-                        onClick={() => this.props.deleteTask(task.task_id)}
-                    >
-                        <Close />
-                    </IconButton>
+                    <DeleteButton onClick={() => this.props.deleteTask(task.task_id)} />
                 </Grid>
             </Grid>
         );
+    }
+
+    getUniqueWeekDays(tasks) {
+        // Group items by weekday,
+        // Start date needs to be collected in here in order to separate days from different weeks.
+        return tasks ? _.uniq(tasks.map((task) => this.getWeekDay(task.start_date))) : [];
     }
 
     render(){
         const { tasks, classes } = this.props;
         const { task } = this.state;
 
+        const weekDays = this.getUniqueWeekDays(tasks);
+
         return (
             <div className={classes.pageFrame}>
-                <Grid container className={classes.gridContainer}>
-                    <Grid item xs={2}>Task</Grid>
-                    <Grid item xs={2}>Date</Grid>
-                    <Grid item xs>Start</Grid>
-                    <Grid item xs>End</Grid>
-                    <Grid item xs>Break</Grid>
-                    <Grid item xs>Hours</Grid>
-                    <Grid item xs />
-                </Grid>
-                <Grid container className={classes.gridContainer}>
-                    {this.renderField('name', 'task name', 2)}
-                    {this.renderField('date', 'date', 2)}
-                    {this.renderField('start', '08:00')}
-                    {this.renderField('end', '17:00')}
-                    {this.renderField('break', '00:00')}
-                    <Grid item xs>{task.total}</Grid>
-                    <Grid item xs>
-                        <Button
-                            classes={{ root: classes.addButton }}
-                            onClick={() => this.onAddTaskClick()}
-                        >
-                            Add
-                        </Button>
+                <div className={classes.taskAddingGridWrapper}>
+                    <Grid container className={classes.gridContainer}>
+                        <Grid item xs={2}>Task</Grid>
+                        <Grid item xs={2}>Date</Grid>
+                        <Grid item xs>Start</Grid>
+                        <Grid item xs>End</Grid>
+                        <Grid item xs>Break</Grid>
+                        <Grid item xs>Hours</Grid>
+                        <Grid item xs />
+                        <Grid item xs />
                     </Grid>
-                </Grid>
-                <Divider />
-                {tasks && tasks.map((task) => (
-                    <div key={task.task_id}>
-                        <div className={classes.weekDay}>{this.getWeekDay(task.start_date)}</div>
-                        {this.renderTaskRow(task, classes)}
+                    <Grid container className={classes.gridContainer}>
+                        {this.renderField('name', 'task name', 2)}
+                        {this.renderField('date', 'date', 2)}
+                        {this.renderField('start', '08:00')}
+                        {this.renderField('end', '17:00')}
+                        {this.renderField('break', '00:00')}
+                        <Grid item xs>{task.total}</Grid>
+                        <Grid item xs />
+                        <Grid item xs>
+                            <Button
+                                classes={{ root: classes.addButton }}
+                                onClick={() => this.onAddTaskClick()}
+                            >
+                                Add
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </div>
+                {weekDays.map((weekDay) => (
+                    <div className={classes.weekDayBlock}>
+                        <Grid container>
+                            <Grid item xs={2}>{weekDay}</Grid>
+                            <Grid item xs={2}>render date here</Grid>
+                        </Grid>
+                        {tasks.map((task) => {
+                            if (this.getWeekDay(task.start_date) === weekDay) {
+                                return this.renderTaskRow(task, classes);
+                            }
+                            return null;
+                        })}
                     </div>
                 ))}
             </div>
@@ -300,6 +317,7 @@ TaskPage.propTypes = {
     classes: PropTypes.object.isRequired,
     fetchTasks: PropTypes.func.isRequired,
     addTask: PropTypes.func.isRequired,
+    editTask: PropTypes.func.isRequired,
     deleteTask: PropTypes.func.isRequired,
 };
 
