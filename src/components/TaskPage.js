@@ -79,8 +79,10 @@ class TaskPage extends Component {
     handleTaskFieldChange(key, value) {
         const { task } = this.state;
         task[key] = value;
-        console.log(task[key]);
         this.setState({ task });
+        if (['start', 'end'].includes(key)) {
+            this.updateTotalHours();
+        }
     }
 
     renderField(key, placeholder, colSize) {
@@ -117,20 +119,36 @@ class TaskPage extends Component {
         return date;
     }
 
+    updateTotalHours() {
+        const { start, end } = this.state.task;
+        let total = '00:00';
+        if (start && end) {
+            const startDate = this.getDateTime(start);
+            const endDate = this.getDateTime(end);
+            const milliseconds = Math.abs(endDate - startDate);
+            const tempTime = moment.duration(milliseconds);
+            if (milliseconds) {
+                console.log(milliseconds);
+                total = tempTime.hours() + ':'  + tempTime.minutes();
+            }
+            console.log(total);
+        }
+        this.handleTaskFieldChange('total', total);
+    }
+
     onAddTaskClick() {
-        const { start, end, name } = this.state.task;
+        const { name, start, end, total } = this.state.task;
 
         // Expected API date format "2018-01-04T16:44:14.051000Z"
         const start_date = this.getDateTime(start);
         const end_date = this.getDateTime(end);
-        console.log(start_date);
 
         const apiTask = {
             name,
             start_date,
             end_date,
             break_time: '09:00',
-            total_hours: '00:00',
+            total_hours: total,
         };
 
         this.props.addTask(apiTask);
@@ -138,7 +156,7 @@ class TaskPage extends Component {
 
     render(){
         const { tasks, classes } = this.props;
-        console.log(tasks);
+        const { task } = this.state;
 
         return (
             <div className={classes.pageFrame}>
@@ -157,7 +175,7 @@ class TaskPage extends Component {
                     {this.renderField('start', '08:00')}
                     {this.renderField('end', '17:00')}
                     {this.renderField('break', '00:00')}
-                    <Grid item xs>render total here</Grid>
+                    <Grid item xs>{task.total}</Grid>
                     <Grid item xs>
                         <Button
                             classes={{ root: classes.addButton }}
@@ -170,7 +188,7 @@ class TaskPage extends Component {
                     </Grid>
                 </Grid>
                 <Divider />
-                {tasks && tasks.map(task => (
+                {tasks && tasks.map((task) => (
                     <div key={task.task_id}>
                         <div className={classes.weekDay}>{this.getWeekDay(task.start_date)}</div>
                         <Grid container className={classes.gridContainer}>
