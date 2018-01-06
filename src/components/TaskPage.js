@@ -6,17 +6,15 @@ import { withStyles } from 'material-ui/styles';
 import _ from 'lodash';
 import moment from 'moment';
 
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import Close from 'material-ui-icons/Close';
-import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 
+import AddButton from './AddButton';
+import SaveButton from './SaveButton';
 import DeleteButton from './DeleteButton';
 
 import { drawerWidth } from './Navigation';
-import { blue, green, grey, yellow } from 'material-ui/colors';
+import { blue, grey, yellow } from 'material-ui/colors';
 
 
 const gridContainer = {
@@ -37,12 +35,6 @@ const styles = theme => ({
     listElement: {
         backgroundColor: blue[500],
         borderBottom: `1px solid ${grey[300]}`,
-    },
-    addButton: {
-        color: green[500],
-    },
-    saveButton: {
-        color: green[500],
     },
     weekDay: {
         textAlign: 'left',
@@ -75,20 +67,24 @@ class TaskPage extends Component {
         super();
 
         this.state = {
-            task: {
-                name: 'pottu',
-                date: '',
-                start: '',
-                end: '',
-                break: '00:00',
-                total: '00:00',
-            },
+            task: this.getInitialTaskState(),
             editableTask: null,
         };
 
         this.handleTaskFieldChange = this.handleTaskFieldChange.bind(this);
         this.toggleTaskEdit = this.toggleTaskEdit.bind(this);
         this.onTaskSaveClick = this.onTaskSaveClick.bind(this);
+    }
+
+    getInitialTaskState() {
+        return {
+            name: 'pottu',
+            date: '',
+            start: '',
+            end: '',
+            break: '00:00',
+            total: '00:00',
+        };
     }
 
     componentWillMount() {
@@ -118,24 +114,22 @@ class TaskPage extends Component {
         }
     }
 
-    renderField(key, placeholder, colSize = true, isEditField) {
+    renderField(key, placeholder, isEditField) {
         const { classes } = this.props;
         const { task, editableTask } = this.state;
 
         const value = isEditField ? editableTask[key] : task[key];
 
         return (
-            <Grid item xs={colSize}>
-                <TextField
-                    name={key}
-                    placeholder={placeholder}
-                    classes={{ root: classes.taskField }}
-                    value={value}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value, isEditField)}
-                    margin="normal"
-                    multiline={true}
-                />
-            </Grid>
+            <TextField
+                name={key}
+                placeholder={placeholder}
+                classes={{ root: classes.taskField }}
+                value={value}
+                onChange={(e) => this.handleTaskFieldChange(key, e.target.value, isEditField)}
+                margin="normal"
+                multiline={true}
+            />
         );
     }
 
@@ -188,6 +182,10 @@ class TaskPage extends Component {
             break_time: '00:00',
             total_hours: total,
         });
+
+        this.setState({
+            task: this.getInitialTaskState(),
+        });
     }
 
     onTaskSaveClick() {
@@ -202,27 +200,33 @@ class TaskPage extends Component {
         this.setState({ editableTask });
     }
 
-    renderTaskRow(task, classes) {
+    renderTaskRow(task, classes, i) {
         const { editableTask } = this.state;
         if (editableTask && editableTask.task_id === task.task_id) {
             return (
                 <Grid
+                    key={task.task_id}
                     container
                     className={classes.taskGridContainer + ' active'}
                 >
-                    {this.renderField('name', 'task name', 2, true)}
+                    <Grid item xs={2}>
+                        {this.renderField('name', 'task name', true)}
+                    </Grid>
                     <Grid item xs={2} />
-                    <Grid item xs>{this.formatHours(task.start_date)}</Grid>
-                    <Grid item xs>{this.formatHours(task.end_date)}</Grid>
-                    <Grid item xs>{task.break_time}</Grid>
-                    <Grid item xs>{task.total_hours}</Grid>
                     <Grid item xs>
-                        <Button
-                            classes={{ root: classes.addButton }}
-                            onClick={() => this.onTaskSaveClick()}
-                        >
-                            Save
-                        </Button>
+                        {this.formatHours(task.start_date)}
+                    </Grid>
+                    <Grid item xs>
+                        {this.formatHours(task.end_date)}
+                    </Grid>
+                    <Grid item xs>
+                        {task.break_time}
+                    </Grid>
+                    <Grid item xs>
+                        {task.total_hours}
+                    </Grid>
+                    <Grid item xs>
+                        <SaveButton onClick={() => this.onTaskSaveClick()} />
                     </Grid>
                     <Grid item xs>
                         <DeleteButton onClick={() => this.props.deleteTask(task.task_id)} />
@@ -232,6 +236,7 @@ class TaskPage extends Component {
         }
         return (
             <Grid
+                key={task.task_id}
                 container
                 className={classes.taskGridContainer}
                 onClick={() => this.toggleTaskEdit(task)}
@@ -266,44 +271,45 @@ class TaskPage extends Component {
             <div className={classes.pageFrame}>
                 <div className={classes.taskAddingGridWrapper}>
                     <Grid container className={classes.gridContainer}>
-                        <Grid item xs={2}>Task</Grid>
-                        <Grid item xs={2}>Date</Grid>
-                        <Grid item xs>Start</Grid>
-                        <Grid item xs>End</Grid>
-                        <Grid item xs>Break</Grid>
-                        <Grid item xs>Hours</Grid>
-                        <Grid item xs />
-                        <Grid item xs />
-                    </Grid>
-                    <Grid container className={classes.gridContainer}>
-                        {this.renderField('name', 'task name', 2)}
-                        {this.renderField('date', 'date', 2)}
-                        {this.renderField('start', '08:00')}
-                        {this.renderField('end', '17:00')}
-                        {this.renderField('break', '00:00')}
-                        <Grid item xs>{task.total}</Grid>
+                        <Grid item xs={2}>
+                            <div>Task</div>
+                            {this.renderField('name', 'task name')}
+                        </Grid>
+                        <Grid item xs={2}>
+                            <div>Date</div>
+                            {this.renderField('date', 'date')}
+                        </Grid>
+                        <Grid item xs>
+                            <div>Start</div>
+                            {this.renderField('start', '08:00')}
+                        </Grid>
+                        <Grid item xs>
+                            <div>End</div>
+                            {this.renderField('end', '17:00')}
+                        </Grid>
+                        <Grid item xs>
+                            <div>Break</div>
+                            {this.renderField('break', '00:00')}
+                        </Grid>
+                        <Grid item xs>
+                            <div>Hours</div>
+                            {task.total}
+                        </Grid>
                         <Grid item xs />
                         <Grid item xs>
-                            <Button
-                                classes={{ root: classes.addButton }}
-                                onClick={() => this.onAddTaskClick()}
-                            >
-                                Add
-                            </Button>
+                            <AddButton onClick={() => this.onAddTaskClick()} />
                         </Grid>
                     </Grid>
                 </div>
                 {weekDays.map((weekDay) => (
-                    <div className={classes.weekDayBlock}>
+                    <div key={weekDay} className={classes.weekDayBlock}>
                         <Grid container>
                             <Grid item xs={2}>{weekDay}</Grid>
                             <Grid item xs={2}>render date here</Grid>
                         </Grid>
                         {tasks.map((task) => {
-                            if (this.getWeekDay(task.start_date) === weekDay) {
-                                return this.renderTaskRow(task, classes);
-                            }
-                            return null;
+                            const isSameWeekDay = this.getWeekDay(task.start_date) === weekDay;
+                            return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
                         })}
                     </div>
                 ))}

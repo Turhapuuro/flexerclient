@@ -1,9 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-
 import IconButton from 'material-ui/IconButton';
 import Close from 'material-ui-icons/Close';
-
 import { red } from 'material-ui/colors';
 
 
@@ -24,5 +23,10 @@ const DeleteButton = (props) => (
         <Close />
     </IconButton>
 );
+
+DeleteButton.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles, { withThem: true })(DeleteButton);
