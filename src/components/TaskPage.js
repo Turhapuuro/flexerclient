@@ -257,7 +257,7 @@ class TaskPage extends Component {
 
     getUniqueWeekDays(tasks) {
         // Group items by weekday,
-        // Start date needs to be collected in here in order to separate days from different weeks.
+        // Start date needs to be stored in an object in order to separate days from different weeks.
         return tasks ? _.uniq(tasks.map((task) => this.getWeekDay(task.start_date))) : [];
     }
 
