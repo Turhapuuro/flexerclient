@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
@@ -10,6 +11,7 @@ import { formatHours } from '../../helper_functions/timeformatfunctions';
 
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
+import TaskDatePicker from './TaskDatePicker';
 
 import { gridContainer } from './TaskPage';
 import { grey, yellow } from 'material-ui/colors';
@@ -36,9 +38,15 @@ class EditableTaskRow extends Component {
     constructor(props) {
         super(props);
 
+        const { task } = props;
+        task.start_date = moment(task.start_date);
+
         this.state = {
-            task: props.task,
+            task,
         };
+
+        this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleTaskFieldChange = this.handleTaskFieldChange.bind(this);
     }
 
     handleTaskFieldChange(key, value) {
@@ -73,9 +81,16 @@ class EditableTaskRow extends Component {
         this.props.toggleTaskEdit(null);
     }
 
+    handleDateChange(date) {
+        const { task } = this.state;
+        task.start_date = date;
+        this.setState({ task });
+    }
+
     render () {
         const { classes, deleteTask } = this.props;
-        const {task} = this.state;
+        const { task } = this.state;
+
         return (
             <Grid
                 key={task.task_id}
@@ -85,7 +100,12 @@ class EditableTaskRow extends Component {
                 <Grid item xs={2}>
                     {this.renderField('name', 'task name')}
                 </Grid>
-                <Grid item xs={2} />
+                <Grid item xs={2}>
+                    <TaskDatePicker
+                        value={task.start_date}
+                        onChange={this.handleDateChange}
+                    />
+                </Grid>
                 <Grid item xs>
                     {formatHours(task.start_date)}
                 </Grid>
@@ -115,7 +135,6 @@ EditableTaskRow.propTypes = {
     classes: PropTypes.object.isRequired,
     toggleTaskEdit: PropTypes.func.isRequired,
     deleteTask: PropTypes.func.isRequired,
-    onTaskSaveClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withThem: true })(EditableTaskRow);

@@ -60,7 +60,7 @@ class TaskPage extends Component {
             date: '',
             start: '',
             end: '',
-            break: '00:00',
+            break: '',
             total: '00:00',
         };
     }
@@ -73,11 +73,12 @@ class TaskPage extends Component {
         this.setState({ editableTask });
     }
 
-    renderTaskRow(task, classes, i) {
+    renderTaskRow(task, classes) {
         const { editableTask } = this.state;
         if (editableTask && editableTask.task_id === task.task_id) {
             return (
-                <EditableTaskRow 
+                <EditableTaskRow
+                    key={task.task_id}
                     task={editableTask}
                     deleteTask={this.props.deleteTask}
                     toggleTaskEdit={this.toggleTaskEdit}
@@ -86,7 +87,8 @@ class TaskPage extends Component {
             );
         }
         return (
-            <TaskRow 
+            <TaskRow
+                key={task.task_id}
                 task={task}
                 deleteTask={this.props.deleteTask}
                 toggleTaskEdit={this.toggleTaskEdit}
