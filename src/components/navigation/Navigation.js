@@ -2,22 +2,21 @@ import React, { Component } from 'react';
 import Drawer from 'material-ui/Drawer';
 import { withStyles } from 'material-ui/styles';
 
-import List, { ListItem } from 'material-ui/List';
+import List from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
-import { brown } from 'material-ui/colors';
+import NavHeader from './NavHeader';
+import NavItem from './NavItem';
+
+import { grey } from 'material-ui/colors';
 
 
 export const drawerWidth = 180;
 
 const styles = (theme) => ({
-    drawerPaper: {
-        backgroundColor: brown[300],
+    navWrapper: {
+        backgroundColor: grey[200],
         width: drawerWidth,
-    },
-    drawerHeader: {
-        fontSize: 24,
-        padding: 16,
     },
 });
 
@@ -28,18 +27,16 @@ class Navigation extends Component {
         return (
             <Drawer
                 type='permanent'
-                classes={{ paper: classes.drawerPaper, }}
+                classes={{ paper: classes.navWrapper, }}
                 anchor='left'
             >
-                <div className={classes.drawerHeader}>
-                    FLEXER
-                </div>
-                <Divider />
+                <NavHeader />
                 <List>
-                    <ListItem>Tasks</ListItem>
-                    <ListItem>Overview</ListItem>
+                    <Divider />
+                    <NavItem text='Tasks' />
+                    <NavItem text='Overview' />
+                    <Divider />
                 </List>
-                <Divider />
             </Drawer>
         );
     }
