@@ -52,11 +52,8 @@ class TaskForm extends Component {
     onAddTaskClick() {
         let { name, date, start, end, total } = this.state.task;
 
-        // Expected API date format "2018-01-04T16:44:14.051000Z"
         start = getDateTime(start);
         end = getDateTime(end);
-        //date = moment(date).format('YYYY-MM-DD');
-        date = "2018-01-04T16:44:14.051000Z";
 
         this.props.addTask({
             name,

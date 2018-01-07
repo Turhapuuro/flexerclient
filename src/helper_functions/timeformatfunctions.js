@@ -26,4 +26,4 @@ const getDateTime = (timeString) => {
     return date;
 }
 
-export {formatHours, getDate, getHoursAndMinutes, getDateTime};
+export { formatHours, getDate, getHoursAndMinutes, getDateTime };

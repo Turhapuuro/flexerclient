@@ -100,13 +100,20 @@ class TaskPage extends Component {
     getUniqueDates(tasks) {
         // Group items by weekday,
         // Start date needs to be stored in an object in order to separate days from different weeks.
-        const allDates = tasks.map((task) => getDate(task.date));
-        return tasks ? _.uniqBy(allDates, 'date') : [];
+        const uniqueDates = [];
+
+        tasks.forEach((task) => {
+            const date = getDate(task.date);
+            if (!uniqueDates.includes(date)) {
+                uniqueDates.push(date);
+            }
+        });
+        console.log(uniqueDates);
+        return uniqueDates;
     }
 
     render(){
         const { tasks, classes } = this.props;
-        console.log(tasks);
         const dates = this.getUniqueDates(tasks);
 
         return (
@@ -115,23 +122,23 @@ class TaskPage extends Component {
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
                 />
-               {/* {dates.map((date) => (
-                        <div key={date} className={classes.weekDayBlock}>
-                            <Grid container>
-                                <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
-                                <Grid item xs={2}>{date}</Grid>
-                            </Grid>
-                            {tasks.map((task) => {
-                                const isSameWeekDay = getDate(task.date) === date;
-                                return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
-                            })}
-                        </div>
-                    ))} */}
-                {tasks.map((task) => {
+               {dates.map((date, i) => (
+                    <div key={i} className={classes.weekDayBlock}>
+                        <Grid container>
+                            <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
+                            <Grid item xs={2}>{date}</Grid>
+                        </Grid>
+                        {tasks.map((task) => {
+                            const isSameDate = getDate(task.date) === date;
+                            return isSameDate ? this.renderTaskRow(task, classes) : null;
+                        })}
+                    </div>
+                ))}
+                {/* {tasks.map((task) => {
                     return this.renderTaskRow(task, classes)
                     //const isSameWeekDay = getDate(task.date) === date;
                     //return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
-                })}
+                })} */}
             </div>
         )
     }
