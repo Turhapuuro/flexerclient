@@ -3,8 +3,8 @@ import { createMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 // import logo from './logo.svg';
 import './App.css';
 
-import Navigation from './components/Navigation';
-import TaskPage from './components/TaskPage';
+import Navigation from './components/navigation/Navigation';
+import TaskPage from './components/task_view/TaskPage';
 
 // import { blue } from 'material-ui/colors';
 

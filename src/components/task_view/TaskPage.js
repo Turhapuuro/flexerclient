@@ -1,7 +1,7 @@
 import React, {Component}from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { fetchTasks, addTask, editTask, deleteTask } from '../actions/tasks';
+import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
 import { withStyles } from 'material-ui/styles';
 import _ from 'lodash';
 import moment from 'moment';
@@ -9,11 +9,11 @@ import moment from 'moment';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 
-import AddButton from './AddButton';
-import SaveButton from './SaveButton';
-import DeleteButton from './DeleteButton';
+import AddButton from '../common/buttons/AddButton';
+import SaveButton from '../common/buttons/SaveButton';
+import DeleteButton from '../common/buttons/DeleteButton';
 
-import { drawerWidth } from './Navigation';
+import { drawerWidth } from '../navigation/Navigation';
 import { blue, grey, yellow } from 'material-ui/colors';
 
 
@@ -147,6 +147,7 @@ class TaskPage extends Component {
         date.setHours(hours);
         date.setMinutes(minutes);
         date.setSeconds(0);
+        date.setMilliseconds(0);
         return date;
     }
 
