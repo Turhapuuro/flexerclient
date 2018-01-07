@@ -5,14 +5,11 @@ import moment from 'moment';
 
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
-import Input from 'material-ui/Input';
 
 import AddButton from '../common/buttons/AddButton';
-import NumberFormatCustom from './NumberFormatCustom';
 import TaskDatePicker from './TaskDatePicker';
-
+import HourMinuteField from './HourMinuteField';
 import { getDateTime } from '../../helper_functions/timeformatfunctions';
-
 import { gridContainer } from './TaskPage';
 import { grey } from 'material-ui/colors';
 
@@ -89,22 +86,20 @@ class TaskForm extends Component {
 
     renderField(key, placeholder) {
         const { classes } = this.props;
-        const { task} = this.state;
+        const { task } = this.state;
 
         const value = task[key];
 
         if (['start', 'end', 'break'].includes(key)){
             return (
-                <Input 
-                    name={key}
-                    placeholder={placeholder}
+                <HourMinuteField
                     value={value}
-                    inputComponent={NumberFormatCustom}
-                    inputProps={{'placeholder':placeholder}}
+                    placeholder={placeholder}
                     onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                 />
-            )
+            );
         }
+
         return (
             <TextField
                 name={key}

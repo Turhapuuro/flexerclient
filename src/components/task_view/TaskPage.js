@@ -134,11 +134,6 @@ class TaskPage extends Component {
                         })}
                     </div>
                 ))}
-                {/* {tasks.map((task) => {
-                    return this.renderTaskRow(task, classes)
-                    //const isSameWeekDay = getDate(task.date) === date;
-                    //return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
-                })} */}
             </div>
         )
     }

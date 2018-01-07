@@ -27,7 +27,7 @@ const TaskRow = (props) => {
     const { classes, task, toggleTaskEdit, deleteTask } = props;
     return (
         <Grid
-            key={task.task_id}
+            key={task.task_id + 'default'}
             container
             className={classes.taskGridContainer}
             onClick={() => toggleTaskEdit(task)}
