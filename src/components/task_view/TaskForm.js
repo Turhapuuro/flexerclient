@@ -4,12 +4,14 @@ import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 
 import Grid from 'material-ui/Grid';
+import TextField from 'material-ui/TextField';
+import Input from 'material-ui/Input';
 
 import { gridContainer } from './TaskPage';
 import {getDateTime} from '../../helper_functions/timeformatfunctions';
 import { grey } from 'material-ui/colors';
 import AddButton from '../common/buttons/AddButton';
-import  TextField  from 'material-ui/TextField';
+import NumberFormatCustom from './NumberFormatCustom';
 
 
 const styles = theme => ({
@@ -87,6 +89,18 @@ class TaskForm extends Component {
 
         const value = task[key];
 
+        if (['start', 'end', 'break'].includes(key)){
+            return (
+                <Input 
+                    name={key}
+                    placeholder={placeholder}
+                    value={value}
+                    inputComponent={NumberFormatCustom}
+                    inputProps={{'placeholder':placeholder}}
+                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                />
+            )
+        }
         return (
             <TextField
                 name={key}
@@ -142,7 +156,6 @@ class TaskForm extends Component {
 }
 
 TaskForm.propTypes = {
-    task: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getInitialTaskState: PropTypes.func.isRequired,
     addTask: PropTypes.func.isRequired,
