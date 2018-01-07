@@ -34,8 +34,8 @@ const TaskRow = (props) => {
         >
             <Grid item xs={2}>{task.name}</Grid>
             <Grid item xs={2} />
-            <Grid item xs>{formatHours(task.start_date)}</Grid>
-            <Grid item xs>{formatHours(task.end_date)}</Grid>
+            <Grid item xs>{formatHours(task.start)}</Grid>
+            <Grid item xs>{formatHours(task.end)}</Grid>
             <Grid item xs>{task.break_time}</Grid>
             <Grid item xs>{task.total_hours}</Grid>
             <Grid item xs />

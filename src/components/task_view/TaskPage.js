@@ -100,7 +100,7 @@ class TaskPage extends Component {
     getUniqueDates(tasks) {
         // Group items by weekday,
         // Start date needs to be stored in an object in order to separate days from different weeks.
-        const allDates = tasks.map((task) => getDate(task.start_date));
+        const allDates = tasks.map((task) => getDate(task.date));
         return tasks ? _.uniqBy(allDates, 'date') : [];
     }
 
@@ -115,18 +115,23 @@ class TaskPage extends Component {
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
                 />
-                {dates.map((date) => (
+               {/* {dates.map((date) => (
                         <div key={date} className={classes.weekDayBlock}>
                             <Grid container>
                                 <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
                                 <Grid item xs={2}>{date}</Grid>
                             </Grid>
                             {tasks.map((task) => {
-                                const isSameWeekDay = getDate(task.start_date) === date;
+                                const isSameWeekDay = getDate(task.date) === date;
                                 return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
                             })}
                         </div>
-                    ))}
+                    ))} */}
+                {tasks.map((task) => {
+                    return this.renderTaskRow(task, classes)
+                    //const isSameWeekDay = getDate(task.date) === date;
+                    //return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
+                })}
             </div>
         )
     }

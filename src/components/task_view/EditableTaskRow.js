@@ -39,7 +39,7 @@ class EditableTaskRow extends Component {
         super(props);
 
         const { task } = props;
-        task.start_date = moment(task.start_date);
+        task.date = moment(task.date);
 
         this.state = {
             task,
@@ -83,7 +83,7 @@ class EditableTaskRow extends Component {
 
     handleDateChange(date) {
         const { task } = this.state;
-        task.start_date = date;
+        task.date = date;
         this.setState({ task });
     }
 
@@ -102,15 +102,15 @@ class EditableTaskRow extends Component {
                 </Grid>
                 <Grid item xs={2}>
                     <TaskDatePicker
-                        value={task.start_date}
+                        value={task.date}
                         onChange={this.handleDateChange}
                     />
                 </Grid>
                 <Grid item xs>
-                    {formatHours(task.start_date)}
+                    {formatHours(task.start)}
                 </Grid>
                 <Grid item xs>
-                    {formatHours(task.end_date)}
+                    {formatHours(task.end)}
                 </Grid>
                 <Grid item xs>
                     {task.break_time}
