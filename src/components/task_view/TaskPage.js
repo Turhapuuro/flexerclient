@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
-import { getWeekDay } from '../../helper_functions/timeformatfunctions';
+import { getDate } from '../../helper_functions/timeformatfunctions';
 import { withStyles } from 'material-ui/styles';
 import _ from 'lodash';
 
@@ -97,15 +97,17 @@ class TaskPage extends Component {
         );
     }
 
-    getUniqueWeekDays(tasks) {
+    getUniqueDates(tasks) {
         // Group items by weekday,
         // Start date needs to be stored in an object in order to separate days from different weeks.
-        return tasks ? _.uniq(tasks.map((task) => getWeekDay(task.start_date))) : [];
+        const allDates = tasks.map((task) => getDate(task.date));
+        return tasks ? _.uniqBy(allDates, 'date') : [];
     }
 
     render(){
         const { tasks, classes } = this.props;
-        const weekDays = this.getUniqueWeekDays(tasks);
+        console.log(tasks);
+        const dates = this.getUniqueDates(tasks);
 
         return (
             <div className={classes.pageFrame}>
@@ -113,18 +115,23 @@ class TaskPage extends Component {
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
                 />
-                {weekDays.map((weekDay) => (
-                    <div key={weekDay} className={classes.weekDayBlock}>
-                        <Grid container>
-                            <Grid item xs={2}>{weekDay}</Grid>
-                            <Grid item xs={2}>render date here</Grid>
-                        </Grid>
-                        {tasks.map((task) => {
-                            const isSameWeekDay = getWeekDay(task.start_date) === weekDay;
-                            return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
-                        })}
-                    </div>
-                ))}
+               {/* {dates.map((date) => (
+                        <div key={date} className={classes.weekDayBlock}>
+                            <Grid container>
+                                <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
+                                <Grid item xs={2}>{date}</Grid>
+                            </Grid>
+                            {tasks.map((task) => {
+                                const isSameWeekDay = getDate(task.date) === date;
+                                return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
+                            })}
+                        </div>
+                    ))} */}
+                {tasks.map((task) => {
+                    return this.renderTaskRow(task, classes)
+                    //const isSameWeekDay = getDate(task.date) === date;
+                    //return isSameWeekDay ? this.renderTaskRow(task, classes) : null;
+                })}
             </div>
         )
     }

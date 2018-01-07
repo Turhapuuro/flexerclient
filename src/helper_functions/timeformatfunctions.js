@@ -4,8 +4,8 @@ const formatHours = (date) => {
     return moment(date).format('HH:mm');
 }
 
-const getWeekDay = (date) => {
-    return moment(date).format('dddd');
+const getDate = (date) => {
+    return moment(date).format('DD/MM/YYYY');
 }
 
 const getHoursAndMinutes = (timeString) => {
@@ -26,4 +26,4 @@ const getDateTime = (timeString) => {
     return date;
 }
 
-export {formatHours, getWeekDay, getHoursAndMinutes, getDateTime};
+export {formatHours, getDate, getHoursAndMinutes, getDateTime};
