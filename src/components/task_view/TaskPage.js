@@ -1,6 +1,7 @@
 import React, {Component}from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import moment from 'moment';
 import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
 import { getWeekDay } from '../../helper_functions/timeformatfunctions';
 import { withStyles } from 'material-ui/styles';
@@ -57,7 +58,7 @@ class TaskPage extends Component {
     getInitialTaskState() {
         return {
             name: 'pottu',
-            date: '',
+            date: moment(),
             start: '',
             end: '',
             break: '',

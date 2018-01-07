@@ -7,11 +7,14 @@ import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import Input from 'material-ui/Input';
 
-import { gridContainer } from './TaskPage';
-import {getDateTime} from '../../helper_functions/timeformatfunctions';
-import { grey } from 'material-ui/colors';
 import AddButton from '../common/buttons/AddButton';
 import NumberFormatCustom from './NumberFormatCustom';
+import TaskDatePicker from './TaskDatePicker';
+
+import { getDateTime } from '../../helper_functions/timeformatfunctions';
+
+import { gridContainer } from './TaskPage';
+import { grey } from 'material-ui/colors';
 
 
 const styles = theme => ({
@@ -34,6 +37,7 @@ class TaskForm extends Component {
         };
 
         this.handleTaskFieldChange = this.handleTaskFieldChange.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
     }
 
     handleTaskFieldChange(key, value) {
@@ -114,9 +118,15 @@ class TaskForm extends Component {
         );
     }
 
+    handleDateChange(date) {
+        const { task } = this.state;
+        task.date = date;
+        this.setState({ task });
+    }
+
     render() {
-        const {classes} = this.props;
-        const {task} = this.state;
+        const { classes } = this.props;
+        const { task } = this.state;
 
         return (
             <div className={classes.taskAddingGridWrapper}>
@@ -127,7 +137,10 @@ class TaskForm extends Component {
                     </Grid>
                     <Grid item xs={2}>
                         <div>Date</div>
-                        {this.renderField('date', 'date')}
+                        <TaskDatePicker
+                            value={task.date}
+                            onChange={this.handleDateChange}
+                        />
                     </Grid>
                     <Grid item xs>
                         <div>Start</div>
