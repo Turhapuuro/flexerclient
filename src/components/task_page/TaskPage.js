@@ -33,8 +33,11 @@ const styles = theme => ({
         ...gridContainer,
     },
     weekDayBlock: {
-        padding: 10,
+        padding: '10px 0',
         borderBottom: `1px solid ${grey[300]}`,
+    },
+    tasksContainer: {
+        margin: '104px 0 48px',
     },
 });
 
@@ -117,18 +120,20 @@ class TaskPage extends Component {
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
                 />
-               {dates.map((date, i) => (
-                    <div key={i} className={classes.weekDayBlock}>
-                        <Grid container>
-                            <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
-                            <Grid item xs={2}>{date}</Grid>
-                        </Grid>
-                        {tasks.map((task) => {
-                            const isSameDate = getDate(task.date) === date;
-                            return isSameDate ? this.renderTaskRow(task, classes) : null;
-                        })}
-                    </div>
-                ))}
+                <div className={classes.tasksContainer}>
+                    {dates.map((date, i) => (
+                        <div key={i} className={classes.weekDayBlock}>
+                            <Grid container className={classes.gridContainer}>
+                                <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
+                                <Grid item xs={2}>{date}</Grid>
+                            </Grid>
+                            {tasks.map((task) => {
+                                const isSameDate = getDate(task.date) === date;
+                                return isSameDate ? this.renderTaskRow(task, classes) : null;
+                            })}
+                        </div>
+                    ))}
+                </div>
             </PageContainer>
         )
     }

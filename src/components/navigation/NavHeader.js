@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles';
 const styles = (theme) => ({
     navHeader: {
         fontSize: 24,
-        padding: 16,
+        padding: '18px 16px',
         cursor: 'default',
         color: '#885200',
     },

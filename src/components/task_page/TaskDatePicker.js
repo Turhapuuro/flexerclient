@@ -10,8 +10,8 @@ const styles = (theme) => ({
         backgroundColor: 'transparent',
         border: 0,
         borderBottom: '1px solid black',
-        marginTop: 8,
         paddingBottom: 2,
+        // width: 100,
         '&:hover': {
             borderBottom: '2px solid black',
         },

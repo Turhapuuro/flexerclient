@@ -13,23 +13,21 @@ import TaskDatePicker from './TaskDatePicker';
 
 import { formatHours, getDateTime } from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
-import { grey, yellow } from 'material-ui/colors';
+import { orange } from 'material-ui/colors';
 
 
 const styles = (theme) => ({
     taskGridContainer: {
         ...gridContainer,
         cursor: 'pointer',
-        height: 62,
-        '&:hover': {
-            backgroundColor: grey[100],
-        },
+        height: 52,
         '&.active': {
-            backgroundColor: yellow[100],
+            backgroundColor: orange[200],
         }
     },
     taskField: {
         marginTop: 0,
+        cursor: 'text',
     },
 });
 
@@ -99,7 +97,6 @@ class EditableTaskRow extends Component {
                 classes={{ root: classes.taskField }}
                 value={value}
                 onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                margin="normal"
                 multiline={true}
             />
         );

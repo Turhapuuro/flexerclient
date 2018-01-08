@@ -1,24 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
-import {formatHours} from '../../helper_functions/timeformatfunctions';
+import Grid from 'material-ui/Grid';
 
 import DeleteButton from '../common/buttons/DeleteButton';
 
+import {formatHours} from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
-import { grey} from 'material-ui/colors';
+import { orange } from 'material-ui/colors';
 
 
 const styles = theme => ({
     taskGridContainer: {
         ...gridContainer,
         cursor: 'pointer',
-        height: 62,
+        height: 52,
         '&:hover': {
-            backgroundColor: grey[100],
+            backgroundColor: orange[100],
         }
     }
 });

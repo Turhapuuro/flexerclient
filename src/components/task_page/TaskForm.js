@@ -16,9 +16,12 @@ import { grey } from 'material-ui/colors';
 
 const styles = theme => ({
     taskAddingGridWrapper: {
-        padding: 10,
+        position: 'fixed',
+        zIndex: 100,
+        padding: '0 0 2px',
         borderBottom: `1px solid ${grey[300]}`,
         boxShadow: `${grey[400]} 1px 1px 5px`,
+        backgroundColor: 'white',
     },
     gridContainer: {
         ...gridContainer,
@@ -107,7 +110,6 @@ class TaskForm extends Component {
                 classes={{ root: classes.taskField }}
                 value={value}
                 onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                margin="normal"
                 multiline={true}
             />
         );
@@ -150,7 +152,7 @@ class TaskForm extends Component {
                         {this.renderField('break', '00:00')}
                     </Grid>
                     <Grid item xs>
-                        <div>Hours</div>
+                        <div>Duration</div>
                         {task.total}
                     </Grid>
                     <Grid item xs />
