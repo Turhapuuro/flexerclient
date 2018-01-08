@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { createMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import { Route } from 'react-router-dom';
+
+import Navigation from './components/navigation/Navigation';
+import OverviewPage from './components/overview_page/OverviewPage';
+import TaskPage from './components/task_page/TaskPage';
+
 // import logo from './logo.svg';
 import './App.css';
 
-import Navigation from './components/navigation/Navigation';
-import TaskPage from './components/task_view/TaskPage';
-
-// import { blue } from 'material-ui/colors';
 
 const theme = createMuiTheme({
   palette: {
@@ -25,21 +27,28 @@ const theme = createMuiTheme({
   },
 });
 
+/* Commented out for future reference
+<div className="App">
+  <header className="App-header">
+    <img src={logo} className="App-logo" alt="logo" />
+    <h1 className="App-title">Epic change!</h1>
+  </header>
+  <p className="App-intro">
+    To get started, edit <code>src/App.js</code> and save to reload.
+  </p>
+</div> */
+
 class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        {/* <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Epic change!</h1>
-          </header>
-          <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
-          </p>
-        </div> */}
-        <Navigation />
-        <TaskPage />
+        <header>
+          <Navigation />
+        </header>
+        <main>
+          <Route exact path="/" component={TaskPage} />
+          <Route exact path="/overview" component={OverviewPage} />
+        </main>
       </MuiThemeProvider>
     );
   }

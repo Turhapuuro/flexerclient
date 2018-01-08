@@ -8,15 +8,15 @@ import Divider from 'material-ui/Divider';
 import NavHeader from './NavHeader';
 import NavItem from './NavItem';
 
-import { grey } from 'material-ui/colors';
+import { orange } from 'material-ui/colors';
 
 
-export const drawerWidth = 180;
+export const navWidth = 180;
 
 const styles = (theme) => ({
     navWrapper: {
-        backgroundColor: grey[200],
-        width: drawerWidth,
+        backgroundColor: orange[400],
+        width: navWidth,
     },
 });
 
@@ -33,8 +33,8 @@ class Navigation extends Component {
                 <NavHeader />
                 <List>
                     <Divider />
-                    <NavItem text='Tasks' />
-                    <NavItem text='Overview' />
+                    <NavItem text='Tasks' link='/' />
+                    <NavItem text='Overview' link='/overview' />
                     <Divider />
                 </List>
             </Drawer>

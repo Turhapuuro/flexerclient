@@ -1,20 +1,19 @@
-import React, {Component}from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
-import { getDate } from '../../helper_functions/timeformatfunctions';
 import { withStyles } from 'material-ui/styles';
-import _ from 'lodash';
 
 import Grid from 'material-ui/Grid';
 
+import PageContainer from '../common/PageContainer';
 import TaskRow from './TaskRow';
-
-import { drawerWidth } from '../navigation/Navigation';
-import { blue, grey } from 'material-ui/colors';
 import EditableTaskRow from './EditableTaskRow';
 import TaskForm from './TaskForm';
+
+import { getDate } from '../../helper_functions/timeformatfunctions';
+import { blue, grey } from 'material-ui/colors';
 
 
 export const gridContainer = {
@@ -23,10 +22,6 @@ export const gridContainer = {
 };
 
 const styles = theme => ({
-    pageFrame: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        float: 'right',
-    },
     listElement: {
         backgroundColor: blue[500],
         borderBottom: `1px solid ${grey[300]}`,
@@ -112,12 +107,12 @@ class TaskPage extends Component {
         return uniqueDates;
     }
 
-    render(){
+    render() {
         const { tasks, classes } = this.props;
         const dates = this.getUniqueDates(tasks);
 
         return (
-            <div className={classes.pageFrame}>
+            <PageContainer>
                 <TaskForm 
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
@@ -134,7 +129,7 @@ class TaskPage extends Component {
                         })}
                     </div>
                 ))}
-            </div>
+            </PageContainer>
         )
     }
 }

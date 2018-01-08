@@ -1,19 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { withStyles } from 'material-ui/styles';
 
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
-
-import { withStyles } from 'material-ui/styles';
-
-import { formatHours, getDateTime } from '../../helper_functions/timeformatfunctions';
 
 import HourMinuteField from './HourMinuteField';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
 import TaskDatePicker from './TaskDatePicker';
 
+import { formatHours, getDateTime } from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
 import { grey, yellow } from 'material-ui/colors';
 

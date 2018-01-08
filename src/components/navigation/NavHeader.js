@@ -7,6 +7,7 @@ const styles = (theme) => ({
         fontSize: 24,
         padding: 16,
         cursor: 'default',
+        color: '#885200',
     },
 });
 
