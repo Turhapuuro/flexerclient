@@ -22,6 +22,16 @@
   font-size: large;
 }
 
+// Define animation key frames here and call them inside the components.
+// Example usage:
+//
+// Inside the <Component />:
+// const styles = (theme) => ({
+//   animatedElement: {
+//     animation: App-logo-spin infinite 20s linear;
+//   },
+// });
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

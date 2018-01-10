@@ -17,19 +17,17 @@ import { orange } from 'material-ui/colors';
 
 
 const styles = (theme) => ({
-    taskGridContainer: {
+    editableTaskRow: {
         ...gridContainer,
         cursor: 'pointer',
         height: 52,
-        '&.active': {
-            backgroundColor: orange[200],
-        }
-    },
-    taskField: {
-        marginTop: 0,
-        cursor: 'text',
+        transition: 'background-color 0.3s',
+        backgroundColor: orange[200],
     },
     taskTotalCell: {
+        paddingTop: '12px !important',
+    },
+    taskDeleteCell: {
         paddingTop: '12px !important',
     },
 });
@@ -135,7 +133,7 @@ class EditableTaskRow extends Component {
         return (
             <Grid
                 container
-                className={classes.taskGridContainer + ' active'}
+                className={classes.editableTaskRow}
             >
                 <Grid item xs={2}>
                     {this.renderField('name', 'task name')}
@@ -161,7 +159,7 @@ class EditableTaskRow extends Component {
                 <Grid item xs>
                     <SaveButton onClick={() => this.onTaskSaveClick()} />
                 </Grid>
-                <Grid item xs>
+                <Grid item xs className={classes.taskDeleteCell}>
                     <DeleteButton onClick={() => deleteTask(task.task_id)} />
                 </Grid>
             </Grid>

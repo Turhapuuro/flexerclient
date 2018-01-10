@@ -17,6 +17,7 @@ const styles = theme => ({
         cursor: 'pointer',
         height: 52,
         paddingTop: 4,
+        transition: 'background-color 0.3s',
         '&:hover': {
             backgroundColor: orange[100],
         }
@@ -45,7 +46,12 @@ const TaskRow = (props) => {
             <Grid item xs>{task.total_hours}</Grid>
             <Grid item xs />
             <Grid item xs className={classes.taskTotalCell}>
-                <DeleteButton onClick={() => deleteTask(task.task_id)} />
+                <DeleteButton
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deleteTask(task.task_id);
+                    }}
+                />
             </Grid>
         </Grid>
     )

@@ -37,7 +37,7 @@ const styles = theme => ({
         borderBottom: `1px solid ${grey[300]}`,
     },
     tasksContainer: {
-        margin: '104px 0 48px',
+        margin: '84px 0 48px',
     },
 });
 
