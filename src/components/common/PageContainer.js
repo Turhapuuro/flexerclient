@@ -15,9 +15,9 @@ const styles = (theme) => ({
 });
 
 const PageContainer = (props) => {
-    const { classes, children } = props;
+    const { classes, children, onClick } = props;
     return (
-        <div className={classes.pageContainer}>
+        <div className={classes.pageContainer} onClick={onClick}>
             {children}
         </div>
     );

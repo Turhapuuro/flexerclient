@@ -26,14 +26,11 @@ const styles = theme => ({
         backgroundColor: blue[500],
         borderBottom: `1px solid ${grey[300]}`,
     },
-    weekDay: {
-        textAlign: 'left',
-    },
     gridContainer: {
         ...gridContainer,
     },
-    weekDayBlock: {
-        padding: '10px 0',
+    weekdayBlock: {
+        paddingTop: 10,
         borderBottom: `1px solid ${grey[300]}`,
     },
     tasksContainer: {
@@ -102,10 +99,10 @@ class TaskPage extends Component {
         tasks.forEach((task) => {
             const date = getDate(task.date);
             if (!uniqueDates.find((uniqueDate) => (uniqueDate.date === date))) {
-                const weekDay = moment(task.date).format('dddd');
+                const weekday = moment(task.date).format('dddd');
                 uniqueDates.push({
                     date,
-                    weekDay,
+                    weekday,
                     originalDate: task.date
                 });
             }
@@ -118,16 +115,16 @@ class TaskPage extends Component {
         const uniqueDates = this.getUniqueDates(tasks);
 
         return (
-            <PageContainer>
+            <PageContainer onClick={() => this.toggleTaskEdit(null)}>
                 <TaskForm 
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
                 />
                 <div className={classes.tasksContainer}>
                     {uniqueDates.map((uniqueDate, i) => (
-                        <div key={i} className={classes.weekDayBlock}>
+                        <div key={i} className={classes.weekdayBlock}>
                             <Grid container className={classes.gridContainer}>
-                                <Grid item xs={2}>{uniqueDate.weekDay}</Grid>
+                                <Grid item xs={2}>{uniqueDate.weekday}</Grid>
                                 <Grid item xs={2}>{uniqueDate.date}</Grid>
                             </Grid>
                             {tasks.map((task) => {

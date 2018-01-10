@@ -25,6 +25,9 @@ const styles = theme => ({
     taskNameCell: {
         paddingTop: '9px !important',
     },
+    taskDeleteCell: {
+        textAlign: 'center',
+    },
 });
 
 const TaskRow = (props) => {
@@ -34,20 +37,33 @@ const TaskRow = (props) => {
         <Grid
             container
             className={classes.taskGridContainer}
-            onClick={() => toggleTaskEdit(task)}
+            onClick={(e) => {
+                // Prevent toggleTaskEdit function from launching in <PageContainer>.
+                e.stopPropagation();
+                toggleTaskEdit(task);
+            }}
         >
             <Grid item xs={2} className={classes.taskNameCell}>
                 {task.name}
             </Grid>
             <Grid item xs={2} />
-            <Grid item xs>{formatHours(task.start)}</Grid>
-            <Grid item xs>{formatHours(task.end)}</Grid>
-            <Grid item xs>{task.break_time}</Grid>
-            <Grid item xs>{task.total_hours}</Grid>
+            <Grid item xs>
+                {formatHours(task.start)}
+            </Grid>
+            <Grid item xs>
+                {formatHours(task.end)}
+            </Grid>
+            <Grid item xs>
+                {task.break_time}
+            </Grid>
+            <Grid item xs>
+                {task.total_hours}
+            </Grid>
             <Grid item xs />
-            <Grid item xs className={classes.taskTotalCell}>
+            <Grid item xs className={classes.taskDeleteCell}>
                 <DeleteButton
                     onClick={(e) => {
+                        // Prevent <Grid container> toggleTaskEdit function from launching.
                         e.stopPropagation();
                         deleteTask(task.task_id);
                     }}

@@ -19,7 +19,6 @@ import { orange } from 'material-ui/colors';
 const styles = (theme) => ({
     editableTaskRow: {
         ...gridContainer,
-        cursor: 'pointer',
         height: 52,
         transition: 'background-color 0.3s',
         backgroundColor: orange[200],
@@ -29,6 +28,7 @@ const styles = (theme) => ({
     },
     taskDeleteCell: {
         paddingTop: '12px !important',
+        textAlign: 'center',
     },
 });
 
@@ -134,6 +134,10 @@ class EditableTaskRow extends Component {
             <Grid
                 container
                 className={classes.editableTaskRow}
+                onClick={(e) => {
+                    // Stop editTaskToggle from launching when clicking between cells.
+                    e.stopPropagation();
+                }}
             >
                 <Grid item xs={2}>
                     {this.renderField('name', 'task name')}

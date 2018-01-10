@@ -26,6 +26,13 @@ const styles = theme => ({
     gridContainer: {
         ...gridContainer,
     },
+    taskTotalCellText: {
+        paddingTop: 6,
+    },
+    taskAddButtonCell: {
+        paddingTop: '18px !important',
+        textAlign: 'center',
+    },
 });
 
 class TaskForm extends Component {
@@ -149,10 +156,10 @@ class TaskForm extends Component {
                     </Grid>
                     <Grid item xs>
                         <div>Duration</div>
-                        {task.total}
+                        <div className={classes.taskTotalCellText}>{task.total}</div>
                     </Grid>
                     <Grid item xs />
-                    <Grid item xs>
+                    <Grid item xs className={classes.taskAddButtonCell}>
                         <AddButton onClick={() => this.onAddTaskClick()} />
                     </Grid>
                 </Grid>
