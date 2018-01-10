@@ -4,9 +4,9 @@ import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 
 import Grid from 'material-ui/Grid';
-import TextField from 'material-ui/TextField';
 
 import AddButton from '../common/buttons/AddButton';
+import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
 import { getDateTime } from '../../helper_functions/timeformatfunctions';
@@ -18,7 +18,7 @@ const styles = theme => ({
     taskAddingGridWrapper: {
         position: 'fixed',
         zIndex: 100,
-        padding: '0 0 2px',
+        padding: '4px 0',
         borderBottom: `1px solid ${grey[300]}`,
         boxShadow: `${grey[400]} 1px 1px 5px`,
         backgroundColor: 'white',
@@ -44,6 +44,7 @@ class TaskForm extends Component {
         const { task } = this.state;
         task[key] = value;
         this.setState({ task });
+
         if (['start', 'end'].includes(key)) {
             this.updateTotalHours();
         }
@@ -88,9 +89,7 @@ class TaskForm extends Component {
     }
 
     renderField(key, placeholder) {
-        const { classes } = this.props;
         const { task } = this.state;
-
         const value = task[key];
 
         if (['start', 'end', 'break'].includes(key)){
@@ -104,13 +103,10 @@ class TaskForm extends Component {
         }
 
         return (
-            <TextField
-                name={key}
-                placeholder={placeholder}
-                classes={{ root: classes.taskField }}
+            <TaskTextField
                 value={value}
                 onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                multiline={true}
+                placeholder={placeholder}
             />
         );
     }

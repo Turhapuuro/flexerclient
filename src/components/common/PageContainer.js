@@ -2,7 +2,6 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 
 import { navWidth } from '../navigation/Navigation';
-import { orange } from 'material-ui/colors';
 
 
 const styles = (theme) => ({

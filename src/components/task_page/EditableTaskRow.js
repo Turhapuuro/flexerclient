@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 
 import Grid from 'material-ui/Grid';
-import TextField from 'material-ui/TextField';
 
+import TaskTextField from './TaskTextField';
+import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
-import TaskDatePicker from './TaskDatePicker';
 
 import { formatHours, getDateTime } from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
@@ -28,6 +28,9 @@ const styles = (theme) => ({
     taskField: {
         marginTop: 0,
         cursor: 'text',
+    },
+    taskTotalCell: {
+        paddingTop: '12px !important',
     },
 });
 
@@ -76,7 +79,6 @@ class EditableTaskRow extends Component {
     }
 
     renderField(key, placeholder) {
-        const { classes } = this.props;
         const { task } = this.state;
         const value = task[key];
 
@@ -91,13 +93,10 @@ class EditableTaskRow extends Component {
         }
 
         return (
-            <TextField
-                name={key}
-                placeholder={placeholder}
-                classes={{ root: classes.taskField }}
+            <TaskTextField
                 value={value}
                 onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                multiline={true}
+                placeholder={placeholder}
             />
         );
     }
@@ -118,6 +117,8 @@ class EditableTaskRow extends Component {
             total_hours,
         });
 
+        console.log('this launches')
+
         this.props.toggleTaskEdit(null);
     }
 
@@ -133,7 +134,6 @@ class EditableTaskRow extends Component {
 
         return (
             <Grid
-                key={task.task_id + 'edit'}
                 container
                 className={classes.taskGridContainer + ' active'}
             >
@@ -150,12 +150,12 @@ class EditableTaskRow extends Component {
                     {this.renderField('start', '08:00')}
                 </Grid>
                 <Grid item xs>
-                {this.renderField('end', '17:00')}
+                    {this.renderField('end', '17:00')}
                 </Grid>
                 <Grid item xs>
-                    {task.break_time}
+                    {this.renderField('break', '00:00')}
                 </Grid>
-                <Grid item xs>
+                <Grid item xs className={classes.taskTotalCell}>
                     {task.total_hours}
                 </Grid>
                 <Grid item xs>

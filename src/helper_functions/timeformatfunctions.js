@@ -26,4 +26,8 @@ const getDateTime = (timeString) => {
     return date;
 }
 
-export { formatHours, getDate, getHoursAndMinutes, getDateTime };
+const sortDatesDescOrder = (dateArray, sortKey) => {
+    return dateArray.sort((a, b) => (moment(b[sortKey]) - moment(a[sortKey])));
+};
+
+export { formatHours, getDate, getHoursAndMinutes, getDateTime, sortDatesDescOrder };

@@ -12,7 +12,7 @@ import TaskRow from './TaskRow';
 import EditableTaskRow from './EditableTaskRow';
 import TaskForm from './TaskForm';
 
-import { getDate } from '../../helper_functions/timeformatfunctions';
+import { getDate, sortDatesDescOrder } from '../../helper_functions/timeformatfunctions';
 import { blue, grey } from 'material-ui/colors';
 
 
@@ -68,8 +68,8 @@ class TaskPage extends Component {
         this.props.fetchTasks();
     }
 
-    toggleTaskEdit(editableTask) {
-        this.setState({ editableTask });
+    toggleTaskEdit(originalTask) {
+        this.setState({ editableTask: { ...originalTask } });
     }
 
     renderTaskRow(task, classes) {
@@ -77,7 +77,7 @@ class TaskPage extends Component {
         if (editableTask && editableTask.task_id === task.task_id) {
             return (
                 <EditableTaskRow
-                    key={task.task_id}
+                    key={`task-row-edit-${task.task_id}`}
                     task={editableTask}
                     deleteTask={this.props.deleteTask}
                     toggleTaskEdit={this.toggleTaskEdit}
@@ -87,7 +87,7 @@ class TaskPage extends Component {
         }
         return (
             <TaskRow
-                key={task.task_id}
+                key={`task-row-default-${task.task_id}`}
                 task={task}
                 deleteTask={this.props.deleteTask}
                 toggleTaskEdit={this.toggleTaskEdit}
@@ -99,20 +99,23 @@ class TaskPage extends Component {
         // Group items by weekday,
         // Start date needs to be stored in an object in order to separate days from different weeks.
         const uniqueDates = [];
-
         tasks.forEach((task) => {
             const date = getDate(task.date);
-            if (!uniqueDates.includes(date)) {
-                uniqueDates.push(date);
+            if (!uniqueDates.find((uniqueDate) => (uniqueDate.date === date))) {
+                const weekDay = moment(task.date).format('dddd');
+                uniqueDates.push({
+                    date,
+                    weekDay,
+                    originalDate: task.date
+                });
             }
         });
-        console.log(uniqueDates);
-        return uniqueDates;
+        return sortDatesDescOrder(uniqueDates, 'originalDate');
     }
 
     render() {
         const { tasks, classes } = this.props;
-        const dates = this.getUniqueDates(tasks);
+        const uniqueDates = this.getUniqueDates(tasks);
 
         return (
             <PageContainer>
@@ -121,14 +124,14 @@ class TaskPage extends Component {
                     getInitialTaskState={this.getInitialTaskState}
                 />
                 <div className={classes.tasksContainer}>
-                    {dates.map((date, i) => (
+                    {uniqueDates.map((uniqueDate, i) => (
                         <div key={i} className={classes.weekDayBlock}>
                             <Grid container className={classes.gridContainer}>
-                                <Grid item xs={2}>{moment(date).format('dddd')}</Grid>
-                                <Grid item xs={2}>{date}</Grid>
+                                <Grid item xs={2}>{uniqueDate.weekDay}</Grid>
+                                <Grid item xs={2}>{uniqueDate.date}</Grid>
                             </Grid>
                             {tasks.map((task) => {
-                                const isSameDate = getDate(task.date) === date;
+                                const isSameDate = getDate(task.date) === uniqueDate.date;
                                 return isSameDate ? this.renderTaskRow(task, classes) : null;
                             })}
                         </div>

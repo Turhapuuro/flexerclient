@@ -9,15 +9,18 @@ const styles = (theme) => ({
     taskDatePicker: {
         backgroundColor: 'transparent',
         border: 0,
-        borderBottom: '1px solid black',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
         paddingBottom: 2,
+        marginTop: 4,
         // width: 100,
         '&:hover': {
             borderBottom: '2px solid black',
+            paddingBottom: 1,
         },
         '&:focus': {
             outline: 'none',
             borderBottom: '2px solid blue',
+            paddingBottom: 1,
         },
     },
 });
