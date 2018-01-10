@@ -20,7 +20,7 @@ const styles = theme => ({
         zIndex: 100,
         padding: '4px 0',
         borderBottom: `1px solid ${grey[300]}`,
-        boxShadow: `${grey[400]} 1px 1px 5px`,
+        boxShadow: `${grey[400]} 0px 0px 4px`,
         backgroundColor: 'white',
     },
     gridContainer: {
@@ -58,7 +58,9 @@ class TaskForm extends Component {
     }
 
     onAddTaskClick() {
-        let { name, date, start, end, total } = this.state.task;
+        let { name, date, start, end, break_time, total } = this.state.task;
+
+        break_time = break_time || '00:00';
 
         start = getDateTime(start);
         end = getDateTime(end);
@@ -68,7 +70,7 @@ class TaskForm extends Component {
             date,
             start,
             end,
-            break_time: '00:00',
+            break_time,
             total_hours: total,
         });
 
@@ -99,7 +101,7 @@ class TaskForm extends Component {
         const { task } = this.state;
         const value = task[key];
 
-        if (['start', 'end', 'break'].includes(key)){
+        if (['start', 'end', 'break_time'].includes(key)){
             return (
                 <HourMinuteField
                     value={value}
@@ -152,7 +154,7 @@ class TaskForm extends Component {
                     </Grid>
                     <Grid item xs>
                         <div>Break</div>
-                        {this.renderField('break', '00:00')}
+                        {this.renderField('break_time', '00:00')}
                     </Grid>
                     <Grid item xs>
                         <div>Duration</div>

@@ -30,7 +30,7 @@ const TaskDatePicker = (props) => {
 
     return (
         <DatePicker
-            dateFormat='DD.MM.YYYY'
+            dateFormat='DD/MM/YYYY'
             className={classes.taskDatePicker}
             selected={value}
             onChange={(date) => onChange(date)}

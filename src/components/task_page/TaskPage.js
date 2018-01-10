@@ -56,7 +56,7 @@ class TaskPage extends Component {
             date: moment(),
             start: '',
             end: '',
-            break: '',
+            break_time: '',
             total: '00:00',
         };
     }

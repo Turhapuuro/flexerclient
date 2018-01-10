@@ -40,6 +40,7 @@ class EditableTaskRow extends Component {
         task.date = moment(task.date);
         task.start = formatHours(task.start);
         task.end = formatHours(task.end);
+        task.total_hours = task.total_hours.substring(0, 5);
 
         this.state = {
             task,
@@ -80,7 +81,7 @@ class EditableTaskRow extends Component {
         const { task } = this.state;
         const value = task[key];
 
-        if (['start', 'end', 'break'].includes(key)){
+        if (['start', 'end', 'break_time'].includes(key)){
             return (
                 <HourMinuteField
                     value={value}
@@ -100,7 +101,7 @@ class EditableTaskRow extends Component {
     }
 
     onTaskSaveClick() {
-        let { task_id, name, date, start, end, total_hours } = this.state.task;
+        let { task_id, name, date, start, end, break_time, total_hours } = this.state.task;
 
         start = getDateTime(start);
         end = getDateTime(end);
@@ -111,7 +112,7 @@ class EditableTaskRow extends Component {
             date,
             start,
             end,
-            break_time: '00:00',
+            break_time,
             total_hours,
         });
 
@@ -155,7 +156,7 @@ class EditableTaskRow extends Component {
                     {this.renderField('end', '17:00')}
                 </Grid>
                 <Grid item xs>
-                    {this.renderField('break', '00:00')}
+                    {this.renderField('break_time', '00:00')}
                 </Grid>
                 <Grid item xs className={classes.taskTotalCell}>
                     {task.total_hours}

@@ -54,10 +54,10 @@ const TaskRow = (props) => {
                 {formatHours(task.end)}
             </Grid>
             <Grid item xs>
-                {task.break_time}
+                {task.break_time.substring(0, 5)}
             </Grid>
             <Grid item xs>
-                {task.total_hours}
+                {task.total_hours.substring(0, 5)}
             </Grid>
             <Grid item xs />
             <Grid item xs className={classes.taskDeleteCell}>
