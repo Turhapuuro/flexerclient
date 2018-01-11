@@ -52,7 +52,7 @@ class TaskForm extends Component {
         task[key] = value;
         this.setState({ task });
 
-        if (['start', 'end'].includes(key)) {
+        if (['start', 'end', 'break_time'].includes(key)) {
             this.updateTotalHours();
         }
     }
@@ -80,9 +80,10 @@ class TaskForm extends Component {
     }
 
     updateTotalHours() {
-        const { start, end } = this.state.task;
+        const { start, end, break_time } = this.state.task;
         let total = '00:00';
         if (start && end) {
+            // Use break_time here when calculating total time.
             const startDate = getDateTime(start);
             const endDate = getDateTime(end);
             const milliseconds = Math.abs(endDate - startDate);
@@ -116,6 +117,7 @@ class TaskForm extends Component {
                 value={value}
                 onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                 placeholder={placeholder}
+                autoFocus={key === 'name'}
             />
         );
     }

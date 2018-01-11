@@ -20,7 +20,6 @@ const styles = (theme) => ({
     editableTaskRow: {
         ...gridContainer,
         height: 52,
-        transition: 'background-color 0.3s',
         backgroundColor: orange[200],
     },
     taskTotalCell: {
@@ -54,15 +53,16 @@ class EditableTaskRow extends Component {
         const { task } = this.state;
         task[key] = value;
         this.setState({ task });
-        if (['start', 'end'].includes(key)) {
+        if (['start', 'end', 'break_time'].includes(key)) {
             this.updateTotalHours();
         }
     }
 
     updateTotalHours() {
-        const { start, end } = this.state.task;
+        const { start, end, break_time } = this.state.task;
         let total = '00:00';
         if (start && end) {
+            // Use break_time here when calculating total time.
             const startDate = getDateTime(start);
             const endDate = getDateTime(end);
             const milliseconds = Math.abs(endDate - startDate);
@@ -115,8 +115,6 @@ class EditableTaskRow extends Component {
             break_time,
             total_hours,
         });
-
-        console.log('this launches')
 
         this.props.toggleTaskEdit(null);
     }

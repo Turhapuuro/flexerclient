@@ -15,7 +15,7 @@ const styles = theme => ({
 });
 
 const TaskTextField = (props) => {
-    const { classes, onChange, value, placeholder } = props;
+    const { classes, onChange, value, placeholder, autoFocus = false } = props;
 
     return (
         <TextField
@@ -25,6 +25,7 @@ const TaskTextField = (props) => {
             onChange={onChange}
             InputProps={{ className: classes.taskFieldInput }}
             multiline={true}
+            autoFocus={autoFocus}
         />
     );
 }
