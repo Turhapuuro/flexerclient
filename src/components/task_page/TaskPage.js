@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
+import { fetchProjects } from '../../actions/projects';
 import { withStyles } from 'material-ui/styles';
 
 import Grid from 'material-ui/Grid';
@@ -43,7 +44,6 @@ class TaskPage extends Component {
         super();
 
         this.state = {
-            task: this.getInitialTaskState(),
             editableTask: null,
         };
 
@@ -63,6 +63,7 @@ class TaskPage extends Component {
 
     componentWillMount() {
         this.props.fetchTasks();
+        this.props.fetchProjects();
     }
 
     toggleTaskEdit(originalTask) {
@@ -141,6 +142,7 @@ class TaskPage extends Component {
 
 TaskPage.propTypes = {
     tasks: PropTypes.array.isRequired,
+    projects: PropTypes.array.isRequired,
     classes: PropTypes.object.isRequired,
     fetchTasks: PropTypes.func.isRequired,
     addTask: PropTypes.func.isRequired,
@@ -149,7 +151,8 @@ TaskPage.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    tasks: state.tasksStore.tasks,
+    tasks: state.taskStore.tasks,
+    projects: state.projectStore.projects
 })
 
 const mapDispatchToProps = (dispatch) => {
@@ -158,6 +161,7 @@ const mapDispatchToProps = (dispatch) => {
         addTask: (task) => dispatch(addTask(task)),
         editTask: (task) => dispatch(editTask(task)),
         deleteTask: (id) => dispatch(deleteTask(id)),
+        fetchProjects: () => dispatch(fetchProjects()),
     }
 }
 
