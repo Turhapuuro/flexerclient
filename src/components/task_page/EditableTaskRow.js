@@ -8,6 +8,7 @@ import Grid from 'material-ui/Grid';
 import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
+import ProjectSelectField from './ProjectSelectField';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
 
@@ -35,7 +36,7 @@ class EditableTaskRow extends Component {
     constructor(props) {
         super(props);
 
-        const { task } = props;
+        const { task, projects } = props;
         task.date = moment(task.date);
         task.start = formatHours(task.start);
         task.end = formatHours(task.end);
@@ -43,6 +44,7 @@ class EditableTaskRow extends Component {
 
         this.state = {
             task,
+            projects
         };
 
         this.handleDateChange = this.handleDateChange.bind(this);
@@ -59,7 +61,7 @@ class EditableTaskRow extends Component {
     }
 
     updateTotalHours() {
-        const { start, end, break_time } = this.state.task;
+        const { start, end } = this.state.task;
         let total = '00:00';
         if (start && end) {
             // Use break_time here when calculating total time.
@@ -78,7 +80,7 @@ class EditableTaskRow extends Component {
     }
 
     renderField(key, placeholder) {
-        const { task } = this.state;
+        const { task, projects } = this.state;
         const value = task[key];
 
         if (['start', 'end', 'break_time'].includes(key)){
@@ -91,6 +93,16 @@ class EditableTaskRow extends Component {
             );
         }
 
+        if (key === 'project_id') {
+            return (
+                <ProjectSelectField
+                    projects={projects}
+                    value={task.project_id}
+                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                />
+            )
+        }
+
         return (
             <TaskTextField
                 value={value}
@@ -101,7 +113,7 @@ class EditableTaskRow extends Component {
     }
 
     onTaskSaveClick() {
-        let { task_id, name, date, start, end, break_time, total_hours } = this.state.task;
+        let { task_id, name, date, start, end, break_time, total_hours, project_id } = this.state.task;
 
         start = getDateTime(start);
         end = getDateTime(end);
@@ -114,6 +126,7 @@ class EditableTaskRow extends Component {
             end,
             break_time,
             total_hours,
+            project_id
         });
 
         this.props.toggleTaskEdit(null);
@@ -146,6 +159,9 @@ class EditableTaskRow extends Component {
                         value={task.date}
                         onChange={this.handleDateChange}
                     />
+                </Grid>
+                <Grid item xs={2}>
+                    {this.renderField('project_id', 'project name')}
                 </Grid>
                 <Grid item xs>
                     {this.renderField('start', '08:00')}

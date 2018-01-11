@@ -31,7 +31,7 @@ const styles = theme => ({
 });
 
 const TaskRow = (props) => {
-    const { classes, task, toggleTaskEdit, deleteTask } = props;
+    const { classes, task, toggleTaskEdit, deleteTask, projects } = props;
 
     return (
         <Grid
@@ -47,6 +47,12 @@ const TaskRow = (props) => {
                 {task.name}
             </Grid>
             <Grid item xs={2} />
+            <Grid item xs={2} className={classes.taskNameCell}>
+                {projects.map(element => { return (
+                     element.id === task.project_id ? element.name : null
+                    )}
+                )}
+            </Grid>
             <Grid item xs>
                 {formatHours(task.start)}
             </Grid>

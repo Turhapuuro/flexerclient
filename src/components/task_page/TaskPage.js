@@ -58,6 +58,7 @@ class TaskPage extends Component {
             end: '',
             break_time: '',
             total: '00:00',
+            project_id: 'None'
         };
     }
 
@@ -72,6 +73,7 @@ class TaskPage extends Component {
 
     renderTaskRow(task, classes) {
         const { editableTask } = this.state;
+        const { projects } = this.props;
         if (editableTask && editableTask.task_id === task.task_id) {
             return (
                 <EditableTaskRow
@@ -80,6 +82,7 @@ class TaskPage extends Component {
                     deleteTask={this.props.deleteTask}
                     toggleTaskEdit={this.toggleTaskEdit}
                     editTask={this.props.editTask}
+                    projects={projects}
                 />
             );
         }
@@ -89,6 +92,7 @@ class TaskPage extends Component {
                 task={task}
                 deleteTask={this.props.deleteTask}
                 toggleTaskEdit={this.toggleTaskEdit}
+                projects={projects}
             />
         );
     }
@@ -112,7 +116,7 @@ class TaskPage extends Component {
     }
 
     render() {
-        const { tasks, classes } = this.props;
+        const { tasks, classes, projects } = this.props;
         const uniqueDates = this.getUniqueDates(tasks);
 
         return (
@@ -120,6 +124,7 @@ class TaskPage extends Component {
                 <TaskForm 
                     addTask={this.props.addTask}
                     getInitialTaskState={this.getInitialTaskState}
+                    projects={projects}
                 />
                 <div className={classes.tasksContainer}>
                     {uniqueDates.map((uniqueDate, i) => (
