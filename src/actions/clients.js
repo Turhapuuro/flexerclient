@@ -1,14 +1,14 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
-export const fetchProjects = () => {
+export const fetchClients = () => {
     return dispatch => {
-        axios.get('/projects')
+        axios.get('/clients')
             .then(response => {
                 dispatch({
-                    type: actionTypes.FETCH_PROJECTS,
+                    type: actionTypes.FETCH_CLIENTS,
                     payload: response.data
                 })
             });
-    }
+    };
 };
