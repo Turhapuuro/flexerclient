@@ -9,6 +9,7 @@ import AddButton from '../common/buttons/AddButton';
 import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
+import ProjectSelectField from './ProjectSelectField';
 import { getDateTime } from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
 import { grey } from 'material-ui/colors';
@@ -58,7 +59,7 @@ class TaskForm extends Component {
     }
 
     onAddTaskClick() {
-        let { name, date, start, end, break_time, total } = this.state.task;
+        let { name, date, start, end, break_time, total, project_id } = this.state.task;
 
         break_time = break_time || '00:00';
 
@@ -72,6 +73,7 @@ class TaskForm extends Component {
             end,
             break_time,
             total_hours: total,
+            project_id
         });
 
         this.setState({
@@ -80,7 +82,7 @@ class TaskForm extends Component {
     }
 
     updateTotalHours() {
-        const { start, end, break_time } = this.state.task;
+        const { start, end } = this.state.task;
         let total = '00:00';
         if (start && end) {
             // Use break_time here when calculating total time.
@@ -110,6 +112,16 @@ class TaskForm extends Component {
                     onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                 />
             );
+        }
+
+        if (key === 'project_id'){
+            return (
+                <ProjectSelectField
+                    projects={this.props.projects}
+                    value={task.project_id}
+                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                />
+            )
         }
 
         return (
@@ -145,6 +157,10 @@ class TaskForm extends Component {
                             value={task.date}
                             onChange={this.handleDateChange}
                         />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <div>Project</div>
+                        {this.renderField('project_id', 'project name')}
                     </Grid>
                     <Grid item xs>
                         <div>Start</div>
