@@ -5,6 +5,8 @@ import { Route } from 'react-router-dom';
 import Navigation from './components/navigation/Navigation';
 import OverviewPage from './components/overview_page/OverviewPage';
 import TaskPage from './components/task_page/TaskPage';
+import ProjectPage from './components/project_page/ProjectPage';
+import ClientPage from './components/client_page/ClientPage';
 
 // import logo from './logo.svg';
 import './App.css';
@@ -47,7 +49,9 @@ class App extends Component {
         </header>
         <main>
           <Route exact path="/" component={TaskPage} />
-          <Route exact path="/overview" component={OverviewPage} />
+          <Route exact path="/view/overview" component={OverviewPage} />
+          <Route exact path="/view/projects" component={ProjectPage} />
+          <Route exact path="/view/clients" component={ClientPage} />
         </main>
       </MuiThemeProvider>
     );
