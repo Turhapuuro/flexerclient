@@ -42,7 +42,7 @@ OverviewPage.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    tasks: state.tasksStore.tasks,
+    // tasks: state.taskStore.tasks,
 })
 
 const mapDispatchToProps = (dispatch) => {

@@ -34,7 +34,9 @@ class Navigation extends Component {
                 <List>
                     <Divider />
                     <NavItem text='Tasks' link='/' />
-                    <NavItem text='Overview' link='/overview' />
+                    <NavItem text='Overview' link='/view/overview' />
+                    <NavItem text='Projects' link='/view/projects' />
+                    <NavItem text='Clients' link='/view/clients' />
                     <Divider />
                 </List>
             </Drawer>
