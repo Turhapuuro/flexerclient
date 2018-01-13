@@ -9,6 +9,7 @@ import { withStyles } from 'material-ui/styles';
 
 import PageContainer from '../common/PageContainer';
 import MonthSelector from './MonthSelector';
+import TaskBarChart from './TaskBarChart';
 
 // import { getDate } from '../../helper_functions/timeformatfunctions';
 // import { blue, grey } from 'material-ui/colors';
@@ -17,8 +18,8 @@ import MonthSelector from './MonthSelector';
 const styles = theme => ({
     barChartContainer: {
         height: 400,
-        border: '1px solid black',
-        margin: '0 10px',
+        // border: '1px solid black',
+        // margin: '0 10px',
         padding: 10,
     },
 });
@@ -40,7 +41,7 @@ class OverviewPage extends Component {
             <PageContainer>
                 <MonthSelector />
                 <div className={classes.barChartContainer}>
-                    render bar chart here
+                    <TaskBarChart />
                 </div>
             </PageContainer>
         )
