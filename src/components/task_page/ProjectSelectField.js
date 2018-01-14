@@ -17,16 +17,22 @@ const ProjectSelectField = (props) => {
             <Select 
                 value={value} 
                 name="project_id" 
-                displayEmpty
                 onChange={onChange}
                 fullWidth={true}
+                //renderValue={value => value}
             >
+                <MenuItem
+                    value=""
+                    key="empty_select"
+                >
+                    None
+                </MenuItem>
                 {props.projects.map(project => (
                     <MenuItem 
                         value={project.id}
                         key={project.id}
-                    >{
-                        project.name}
+                    >
+                        {project.name}
                     </MenuItem>
                 ))}
             </Select>

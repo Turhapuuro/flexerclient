@@ -10,6 +10,11 @@ const reducer = (state = initialState, action) => {
             return state = {
                 projects: action.payload,
             };
+        case actionTypes.ADD_PROJECT:
+            const newProject = action.payload;
+            return state = {
+                projects: state.projects.concat(newProject),
+            };
         default:
             return state;
     }

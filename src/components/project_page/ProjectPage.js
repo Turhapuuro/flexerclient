@@ -9,6 +9,7 @@ import { withStyles } from 'material-ui/styles';
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
 import PageContainer from '../common/PageContainer';
+import ProjectForm from './ProjectForm';
 
 // import { getDate } from '../../helper_functions/timeformatfunctions';
 // import { blue, grey } from 'material-ui/colors';
@@ -16,6 +17,9 @@ import PageContainer from '../common/PageContainer';
 
 const styles = theme => ({
     // Add component styles here.
+    projectContainer: {
+        margin: '84px 0 48px',
+    },
 });
 
 class ProjectPage extends Component {
@@ -30,11 +34,14 @@ class ProjectPage extends Component {
     }
 
     render() {
-        const { projects, clients } = this.props;
+        const { projects, clients, classes } = this.props;
 
         return (
             <PageContainer>
-                <Table>
+                <ProjectForm
+                    clients={clients}
+                />
+                <Table className={classes.projectContainer}>
                     <TableHead>
                         <TableRow>
                             <TableCell>Project</TableCell>
@@ -43,11 +50,11 @@ class ProjectPage extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {projects.map(({ id, name, client_id }) => (
+                        {projects.map(({ id, name, client, description }) => (
                             <TableRow key={id}>
                                 <TableCell>{name}</TableCell>
-                                <TableCell>{this.getClientName(clients, client_id)}</TableCell>
-                                <TableCell>project description</TableCell>
+                                <TableCell>{this.getClientName(clients, client)}</TableCell>
+                                <TableCell>{description}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
