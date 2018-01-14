@@ -5,44 +5,62 @@ import { connect } from 'react-redux';
 // import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
 import { withStyles } from 'material-ui/styles';
 
-// import Grid from 'material-ui/Grid';
-
 import PageContainer from '../common/PageContainer';
 import MonthSelector from './MonthSelector';
 import TaskBarChart from './TaskBarChart';
+import ProjectTable from './ProjectTable';
 
-// import { getDate } from '../../helper_functions/timeformatfunctions';
-// import { blue, grey } from 'material-ui/colors';
+import { getRandomizedMonthlyProjectData } from './mock_task_data';
 
 
 const styles = theme => ({
-    barChartContainer: {
-        height: 400,
-        // border: '1px solid black',
-        // margin: '0 10px',
-        padding: 10,
-    },
+    // Add component styles here.
 });
 
 class OverviewPage extends Component {
     constructor() {
         super();
 
-        this.state = {};
+        this.state = {
+            mockData: getRandomizedMonthlyProjectData(),
+        };
+        this.getMonthTaskData = this.getMonthTaskData.bind(this);
     }
 
-    componentWillMount() {
-        // this.props.fetchOverviewTasks();
+    getProjectTableData(data) {
+        const projectTableData = {};
+        data.forEach((dataObj) => {
+            Object.keys(dataObj).forEach((key) => {
+                // Collect all project names found in the data.
+                if (!['date', 'total'].includes(key)) {
+                    let total = projectTableData[key] && projectTableData[key].total
+                                ? projectTableData[key].total + dataObj[key] : dataObj[key];
+                    projectTableData[key] = { total };
+                }
+            });
+        });
+
+        return projectTableData;
+    }
+
+    getMonthTaskData(date) {
+        // Fetch monthly task data here.
+        console.log(date);
+
+        // Change mockData to this.props.data when backend serves API data via redux.
+        const dayCount = date.daysInMonth();
+        const mockData = getRandomizedMonthlyProjectData(dayCount);
+        this.setState({ mockData });
     }
 
     render() {
-        const { classes } = this.props;
+        const { mockData } = this.state;
+
         return (
             <PageContainer>
-                <MonthSelector />
-                <div className={classes.barChartContainer}>
-                    <TaskBarChart />
-                </div>
+                <MonthSelector requestMonthData={this.getMonthTaskData} />
+                <TaskBarChart data={mockData} />
+                <ProjectTable projectData={this.getProjectTableData(mockData)} />
             </PageContainer>
         )
     }
