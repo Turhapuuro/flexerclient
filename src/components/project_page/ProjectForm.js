@@ -12,10 +12,12 @@ import TaskTextField from '../task_page/TaskTextField';
 import { gridContainer } from '../task_page/TaskPage';
 import { grey } from 'material-ui/colors';
 import { addProject } from '../../actions/projects';
+import { navWidth } from '../navigation/Navigation';
 
 
 const styles = theme => ({
     projectAddingGridWrapper: {
+        width: `calc(100% - ${navWidth}px)`,
         position: 'fixed',
         zIndex: 100,
         padding: '4px 0',
