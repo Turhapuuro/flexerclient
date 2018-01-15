@@ -5,5 +5,7 @@ export const DELETE_TASK = 'DELETE_TASK';
 
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const ADD_PROJECT = 'ADD_PROJECT';
+export const EDIT_PROJECT = 'EDIT_PROJECT';
+export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export const FETCH_CLIENTS = 'FETCH_CLIENTS';

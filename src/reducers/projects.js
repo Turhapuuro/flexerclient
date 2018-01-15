@@ -15,6 +15,16 @@ const reducer = (state = initialState, action) => {
             return state = {
                 projects: state.projects.concat(newProject),
             };
+        case actionTypes.EDIT_PROJECT:
+            const editedProject = action.payload;
+            return state = {
+                projects: state.projects.map((project) => (project.id === editedProject.id ? editedProject : project)),
+            };
+        case actionTypes.DELETE_PROJECT:
+            const deletedProjectId = action.payload;
+            return state = {
+                projects: state.projects.filter(({ id }) => (id !== deletedProjectId)),
+            };
         default:
             return state;
     }
