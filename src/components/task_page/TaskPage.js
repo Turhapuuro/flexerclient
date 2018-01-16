@@ -7,6 +7,7 @@ import { fetchProjects } from '../../actions/projects';
 import { withStyles } from 'material-ui/styles';
 
 import Grid from 'material-ui/Grid';
+import { MenuItem } from 'material-ui/Menu';
 
 import PageContainer from '../common/PageContainer';
 import TaskRow from './TaskRow';
@@ -48,6 +49,7 @@ class TaskPage extends Component {
         };
 
         this.toggleTaskEdit = this.toggleTaskEdit.bind(this);
+        this.mapProjectsToMenuItems = this.mapProjectsToMenuItems.bind(this);
     }
 
     getInitialTaskState() {
@@ -82,6 +84,7 @@ class TaskPage extends Component {
                     deleteTask={this.props.deleteTask}
                     toggleTaskEdit={this.toggleTaskEdit}
                     editTask={this.props.editTask}
+                    mapProjects={this.mapProjectsToMenuItems}
                     projects={projects}
                 />
             );
@@ -95,6 +98,21 @@ class TaskPage extends Component {
                 projects={projects}
             />
         );
+    }
+
+    mapProjectsToMenuItems() {
+        const { projects } = this.props;
+
+        return (
+            projects.map(project => (
+                <MenuItem
+                    value={project.id}
+                    key={project.id}
+                >
+                    {project.name}
+                </MenuItem>
+            ))
+        )
     }
 
     getUniqueDates(tasks) {
@@ -123,6 +141,7 @@ class TaskPage extends Component {
             <PageContainer onClick={() => this.toggleTaskEdit(null)}>
                 <TaskForm 
                     addTask={this.props.addTask}
+                    mapProjects={this.mapProjectsToMenuItems}
                     getInitialTaskState={this.getInitialTaskState}
                     projects={projects}
                 />

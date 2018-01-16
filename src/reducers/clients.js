@@ -10,6 +10,11 @@ const reducer = (state = initialState, action) => {
             return {
                 clients: action.payload,
             };
+        case actionTypes.DELETE_CLIENT:
+            const deletedClientId = action.payload;
+            return state = {
+                clients: state.clients.filter(({ id }) => (id !== deletedClientId)),
+            };
         default:
             return state;
     }

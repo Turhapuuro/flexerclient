@@ -10,38 +10,32 @@ const styles = theme => ({
     },
 })
 
-const ClientSelectField = (props) => {
-    const { onChange, project, clients} = props;
+const SelectField = (props) => {
+    const { value, onChange, options } = props;
 
     return (
         <Select
-            value={project.client}
-            name="client"
-            fullWidth={true}
+            value={value}
+            name="project_id"
             onChange={onChange}
+            fullWidth={true}
         >
             <MenuItem
                 value=""
                 key="empty_select"
             >
                 None
-            </MenuItem>
-            {clients.map(client => (
-                <MenuItem
-                    value={client.id}
-                    key={client.id}
-                >
-                    {client.name}
                 </MenuItem>
-            ))}
+                {options()}
         </Select>
-    );
+    )
 }
 
-ClientSelectField.propTypes = {
+SelectField.propTypes = {
     classes: PropTypes.object.isRequired,
-    project: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired,
+    options: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles, { withThem: true })(ClientSelectField);
+export default withStyles(styles, { withThem: true })(SelectField);

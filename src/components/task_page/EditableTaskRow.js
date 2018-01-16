@@ -8,7 +8,7 @@ import Grid from 'material-ui/Grid';
 import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
-import ProjectSelectField from './ProjectSelectField';
+import SelectField from '../common/inputs/SelectField';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
 
@@ -80,7 +80,8 @@ class EditableTaskRow extends Component {
     }
 
     renderField(key, placeholder) {
-        const { task, projects } = this.state;
+        const { task } = this.state;
+        const { mapProjects } = this.props;
         const value = task[key];
 
         if (['start', 'end', 'break_time'].includes(key)){
@@ -94,10 +95,15 @@ class EditableTaskRow extends Component {
         }
 
         if (key === 'project_id') {
+            // If project_id is null, assign it an empty string to avoid errors
+            let project_id = task.project_id;
+            if( !project_id ) {
+                project_id = '';
+            }
             return (
-                <ProjectSelectField
-                    projects={projects}
-                    value={task.project_id}
+                <SelectField
+                    options={mapProjects}
+                    value={project_id}
                     onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                 />
             )

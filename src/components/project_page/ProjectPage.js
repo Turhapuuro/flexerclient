@@ -7,6 +7,7 @@ import { fetchClients } from '../../actions/clients';
 import { withStyles } from 'material-ui/styles';
 
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
+import { MenuItem } from 'material-ui/Menu';
 
 import PageContainer from '../common/PageContainer';
 import ProjectForm from './ProjectForm';
@@ -42,6 +43,7 @@ class ProjectPage extends Component {
         this.renderRow = this.renderRow.bind(this);
         this.onFieldChange = this.onFieldChange.bind(this);
         this.onProjectSaveClick = this.onProjectSaveClick.bind(this);
+        this.mapClientsToMenuItems = this.mapClientsToMenuItems.bind(this);
     }
 
     componentWillMount() {
@@ -67,6 +69,20 @@ class ProjectPage extends Component {
         });
     }
 
+    mapClientsToMenuItems() {
+        const { clients } = this.props;
+        return (
+            clients.map(client => (
+                <MenuItem
+                    value={client.id}
+                    key={client.id}
+                >
+                    {client.name}
+                </MenuItem>
+            ))
+        );
+    }
+
     renderRow( project) {
         const { classes, clients, deleteProject } = this.props;
         const { editableProject } = this.state;
@@ -78,6 +94,7 @@ class ProjectPage extends Component {
                     project={editableProject}
                     onChange={this.onFieldChange}
                     clients={clients}
+                    mapClients={this.mapClientsToMenuItems}
                     onClick={this.onProjectSaveClick}
                     deleteProject={deleteProject}
                 />

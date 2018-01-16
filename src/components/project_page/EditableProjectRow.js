@@ -7,7 +7,7 @@ import { TableRow, TableCell } from 'material-ui/Table';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
 import TaskTextField from '../task_page/TaskTextField';
-import ClientSelectField from './ClientSelectField';
+import SelectField from '../common/inputs/SelectField';
 
 import {gridContainer} from '../task_page/TaskPage';
 import { orange } from 'material-ui/colors';
@@ -21,7 +21,11 @@ const styles = (theme) => ({
 });
 
 const EditableProjectRow = (props) => {
-    const { classes, project, clients, onChange, onClick, deleteProject } = props;
+    const { classes, project, onChange, onClick, deleteProject, mapClients } = props;
+    let client = project.client;
+    if (!client) {
+        client = '';
+    }
 
     return (
        <TableRow className={classes.editableProjectRow}
@@ -44,9 +48,10 @@ const EditableProjectRow = (props) => {
                 />
             </TableCell>
             <TableCell>
-                <ClientSelectField
+                <SelectField
+                    value={client}
                     project={project}
-                    clients={clients}
+                    options={mapClients}
                     onChange={(e) => onChange("client", e.target.value)}
                 />
             </TableCell>

@@ -9,3 +9,4 @@ export const EDIT_PROJECT = 'EDIT_PROJECT';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export const FETCH_CLIENTS = 'FETCH_CLIENTS';
+export const DELETE_CLIENT = 'DELETE_CLIENT';

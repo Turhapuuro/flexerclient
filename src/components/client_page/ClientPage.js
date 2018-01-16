@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import moment from 'moment';
 import { fetchProjects } from '../../actions/projects';
-import { fetchClients } from '../../actions/clients';
+import { fetchClients, deleteClient } from '../../actions/clients';
 import { withStyles } from 'material-ui/styles';
 
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
 import PageContainer from '../common/PageContainer';
+import DeleteButton from '../common/buttons/DeleteButton';
 
 // import { getDate } from '../../helper_functions/timeformatfunctions';
 import { blue } from 'material-ui/colors';
@@ -34,7 +35,7 @@ class ClientPage extends Component {
     }
 
     render() {
-        const { classes, clients, projects } = this.props;
+        const { classes, clients, projects, deleteClient } = this.props;
 
         return (
             <PageContainer>
@@ -52,6 +53,15 @@ class ClientPage extends Component {
                                 <TableRow className={classes.clientRow}>
                                     <TableCell>{name}</TableCell>
                                     <TableCell>client description</TableCell>
+                                    <TableCell>
+                                        <DeleteButton 
+                                            onClick={(e) => {
+                                                // Prevent <Grid container> toggleTaskEdit function from launching.
+                                                e.stopPropagation();
+                                                deleteClient(id);
+                                            }}
+                                        />
+                                    </TableCell>
                                 </TableRow>
                                 {clientProjects.map((project) => (
                                     <TableRow key={project.id} className={classes.projectRow}>
@@ -83,6 +93,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchProjects: () => dispatch(fetchProjects()),
         fetchClients: () => dispatch(fetchClients()),
+        deleteClient: (id) => dispatch(deleteClient(id)),
     }
 }
 

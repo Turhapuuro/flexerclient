@@ -12,3 +12,15 @@ export const fetchClients = () => {
             });
     };
 };
+
+export const deleteClient = (id) => {
+    return dispatch => {
+        axios.delete(`/clients/${id}`)
+            .then(response => {
+                dispatch({
+                    type: actionTypes.DELETE_CLIENT,
+                    payload: response.data
+                })
+            })
+    }
+}

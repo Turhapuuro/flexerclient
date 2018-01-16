@@ -9,7 +9,7 @@ import AddButton from '../common/buttons/AddButton';
 import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
-import ProjectSelectField from './ProjectSelectField';
+import SelectField from '../common/inputs/SelectField';
 import { getDateTime } from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
 import { grey } from 'material-ui/colors';
@@ -102,6 +102,7 @@ class TaskForm extends Component {
 
     renderField(key, placeholder) {
         const { task } = this.state;
+        const { mapProjects } = this.props;
         const value = task[key];
 
         if (['start', 'end', 'break_time'].includes(key)){
@@ -116,8 +117,8 @@ class TaskForm extends Component {
 
         if (key === 'project_id'){
             return (
-                <ProjectSelectField
-                    projects={this.props.projects}
+                <SelectField
+                    options={mapProjects}
                     value={task.project_id}
                     onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
                 />
