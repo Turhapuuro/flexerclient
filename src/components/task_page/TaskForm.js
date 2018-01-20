@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import moment from 'moment';
 
 import Grid from 'material-ui/Grid';
 
@@ -10,7 +9,12 @@ import TaskTextField from './TaskTextField';
 import TaskDatePicker from './TaskDatePicker';
 import HourMinuteField from './HourMinuteField';
 import SelectField from '../common/inputs/SelectField';
-import { getDateTime } from '../../helper_functions/timeformatfunctions';
+
+import {
+    getDateTime,
+    hourAndMinuteStringToMinutes,
+    minutesToHoursAndMinutes
+} from '../../helper_functions/timeformatfunctions';
 import { gridContainer } from './TaskPage';
 import { grey } from 'material-ui/colors';
 
@@ -54,8 +58,23 @@ class TaskForm extends Component {
         this.setState({ task });
 
         if (['start', 'end', 'break_time'].includes(key)) {
-            this.updateTotalHours();
+            const total = TaskForm.getTotalHours(task);
+            this.handleTaskFieldChange('total', total);
         }
+    }
+
+    static getTotalHours(task, handleTaskFieldChange) {
+        const { start, end, break_time } = task;
+        const startMinutes = hourAndMinuteStringToMinutes(start);
+        const endMinutes = hourAndMinuteStringToMinutes(end);
+
+        if (endMinutes > startMinutes) {
+            const breakMinutes = hourAndMinuteStringToMinutes(break_time);
+            const totalMinutes = endMinutes - startMinutes - breakMinutes;
+            return minutesToHoursAndMinutes(totalMinutes);
+        }
+
+        return '00:00';
     }
 
     onAddTaskClick() {
@@ -81,28 +100,7 @@ class TaskForm extends Component {
         });
     }
 
-    updateTotalHours() {
-        const { start, end } = this.state.task;
-        let total = '00:00';
-        if (start && end) {
-            // Use break_time here when calculating total time.
-            const startDate = getDateTime(start);
-            const endDate = getDateTime(end);
-            const milliseconds = Math.abs(endDate - startDate);
-
-            if (milliseconds) {
-                const tempTime = moment.duration(milliseconds);
-                const hours = tempTime.hours();
-                const minutes = tempTime.minutes();
-                total = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
-            }
-        }
-        this.handleTaskFieldChange('total', total);
-    }
-
-    renderField(key, placeholder) {
-        const { task } = this.state;
-        const { mapProjects } = this.props;
+    static renderField(task, key, placeholder, handleTaskFieldChange, options) {
         const value = task[key];
 
         if (['start', 'end', 'break_time'].includes(key)){
@@ -110,17 +108,17 @@ class TaskForm extends Component {
                 <HourMinuteField
                     value={value}
                     placeholder={placeholder}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                    onChange={(e) => handleTaskFieldChange(key, e.target.value)}
                 />
             );
         }
 
-        if (key === 'project_id'){
+        if (options) {
             return (
                 <SelectField
-                    options={mapProjects}
-                    value={task.project_id}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                    options={options}
+                    value={value || ''}
+                    onChange={(e) => handleTaskFieldChange(key, e.target.value)}
                 />
             )
         }
@@ -128,7 +126,7 @@ class TaskForm extends Component {
         return (
             <TaskTextField
                 value={value}
-                onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
+                onChange={(e) => handleTaskFieldChange(key, e.target.value)}
                 placeholder={placeholder}
                 autoFocus={key === 'name'}
             />
@@ -142,15 +140,21 @@ class TaskForm extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, mapProjects } = this.props;
         const { task } = this.state;
+        const { renderField } = TaskForm;
 
         return (
             <div className={classes.taskAddingGridWrapper}>
                 <Grid container className={classes.gridContainer}>
                     <Grid item xs={2}>
                         <div>Task</div>
-                        {this.renderField('name', 'task name')}
+                        {renderField(
+                            task,
+                            'name',
+                            'task name',
+                            this.handleTaskFieldChange
+                        )}
                     </Grid>
                     <Grid item xs={2}>
                         <div>Date</div>
@@ -161,19 +165,40 @@ class TaskForm extends Component {
                     </Grid>
                     <Grid item xs={2}>
                         <div>Project</div>
-                        {this.renderField('project_id', 'project name')}
+                        {renderField(
+                            task,
+                            'project_id',
+                            'project name',
+                            this.handleTaskFieldChange,
+                            mapProjects
+                        )}
                     </Grid>
                     <Grid item xs>
                         <div>Start</div>
-                        {this.renderField('start', '08:00')}
+                        {renderField(
+                            task,
+                            'start',
+                            '08:00',
+                            this.handleTaskFieldChange
+                        )}
                     </Grid>
                     <Grid item xs>
                         <div>End</div>
-                        {this.renderField('end', '17:00')}
+                        {renderField(
+                            task,
+                            'end',
+                            '17:00',
+                            this.handleTaskFieldChange
+                        )}
                     </Grid>
                     <Grid item xs>
                         <div>Break</div>
-                        {this.renderField('break_time', '00:00')}
+                        {renderField(
+                            task,
+                            'break_time',
+                            '00:00',
+                            this.handleTaskFieldChange
+                        )}
                     </Grid>
                     <Grid item xs>
                         <div>Duration</div>

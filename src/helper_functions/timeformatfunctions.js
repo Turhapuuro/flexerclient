@@ -8,9 +8,32 @@ const getDate = (date) => {
     return moment(date).format('DD/MM/YYYY');
 }
 
+const hourAndMinuteStringToMinutes = (timeString) => {
+    console.log(timeString);
+    const hoursAndMinutes = timeString.split(':');
+    let totalMinutes = parseInt(hoursAndMinutes[1], 10) || 0;
+    if (hoursAndMinutes[0]) {
+        totalMinutes += (parseInt(hoursAndMinutes[0], 10) * 60);
+    }
+    return totalMinutes;
+};
+
+const addLeftZero = (number) => {
+    return ((number < 10 && number >= 0) ? '0' : '') + number;  
+}
+
+const minutesToHoursAndMinutes = (minutes) => {
+    var hours = addLeftZero(Math.floor(Math.abs(minutes) / 60));  
+    minutes = addLeftZero(Math.abs(minutes) % 60);
+
+    return `${hours}:${minutes}`;
+};
+
 const getHoursAndMinutes = (timeString) => {
-    const hours = parseInt(timeString.substring(0, 2), 10);
-    const minutes = parseInt(timeString.substring(3, 5), 10);
+    const hoursAndMinutes = timeString.split(':');
+    const hours = hoursAndMinutes[0];
+    const minutes = hoursAndMinutes[1];
+
     return { hours, minutes };
 }
 
@@ -30,4 +53,12 @@ const sortDatesDescOrder = (dateArray, sortKey) => {
     return dateArray.sort((a, b) => (moment(b[sortKey]) - moment(a[sortKey])));
 };
 
-export { formatHours, getDate, getHoursAndMinutes, getDateTime, sortDatesDescOrder };
+export {
+    formatHours,
+    getDate,
+    hourAndMinuteStringToMinutes,
+    minutesToHoursAndMinutes,
+    getHoursAndMinutes,
+    getDateTime,
+    sortDatesDescOrder
+};

@@ -5,10 +5,8 @@ import { withStyles } from 'material-ui/styles';
 
 import Grid from 'material-ui/Grid';
 
-import TaskTextField from './TaskTextField';
+import TaskForm from './TaskForm';
 import TaskDatePicker from './TaskDatePicker';
-import HourMinuteField from './HourMinuteField';
-import SelectField from '../common/inputs/SelectField';
 import SaveButton from '../common/buttons/SaveButton';
 import DeleteButton from '../common/buttons/DeleteButton';
 
@@ -55,67 +53,12 @@ class EditableTaskRow extends Component {
         const { task } = this.state;
         task[key] = value;
         this.setState({ task });
+        console.log(key, value);
+
         if (['start', 'end', 'break_time'].includes(key)) {
-            this.updateTotalHours();
+            const total = TaskForm.getTotalHours(task);
+            this.handleTaskFieldChange('total_hours', total);
         }
-    }
-
-    updateTotalHours() {
-        const { start, end } = this.state.task;
-        let total = '00:00';
-        if (start && end) {
-            // Use break_time here when calculating total time.
-            const startDate = getDateTime(start);
-            const endDate = getDateTime(end);
-            const milliseconds = Math.abs(endDate - startDate);
-
-            if (milliseconds) {
-                const tempTime = moment.duration(milliseconds);
-                const hours = tempTime.hours();
-                const minutes = tempTime.minutes();
-                total = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
-            }
-        }
-        this.handleTaskFieldChange('total_hours', total);
-    }
-
-    renderField(key, placeholder) {
-        const { task } = this.state;
-        const { mapProjects } = this.props;
-        const value = task[key];
-
-        if (['start', 'end', 'break_time'].includes(key)){
-            return (
-                <HourMinuteField
-                    value={value}
-                    placeholder={placeholder}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                />
-            );
-        }
-
-        if (key === 'project_id') {
-            // If project_id is null, assign it an empty string to avoid errors
-            let project_id = task.project_id;
-            if( !project_id ) {
-                project_id = '';
-            }
-            return (
-                <SelectField
-                    options={mapProjects}
-                    value={project_id}
-                    onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                />
-            )
-        }
-
-        return (
-            <TaskTextField
-                value={value}
-                onChange={(e) => this.handleTaskFieldChange(key, e.target.value)}
-                placeholder={placeholder}
-            />
-        );
     }
 
     onTaskSaveClick() {
@@ -145,8 +88,9 @@ class EditableTaskRow extends Component {
     }
 
     render () {
-        const { classes, deleteTask } = this.props;
+        const { classes, deleteTask, mapProjects } = this.props;
         const { task } = this.state;
+        const { renderField } = TaskForm;
 
         return (
             <Grid
@@ -158,7 +102,12 @@ class EditableTaskRow extends Component {
                 }}
             >
                 <Grid item xs={2}>
-                    {this.renderField('name', 'task name')}
+                    {renderField(
+                        task,
+                        'name',
+                        'task name',
+                        this.handleTaskFieldChange
+                    )}
                 </Grid>
                 <Grid item xs={2}>
                     <TaskDatePicker
@@ -167,16 +116,37 @@ class EditableTaskRow extends Component {
                     />
                 </Grid>
                 <Grid item xs={2}>
-                    {this.renderField('project_id', 'project name')}
+                    {renderField(
+                        task,
+                        'project_id',
+                        'project name',
+                        this.handleTaskFieldChange,
+                        mapProjects
+                    )}
                 </Grid>
                 <Grid item xs>
-                    {this.renderField('start', '08:00')}
+                    {renderField(
+                        task,
+                        'start',
+                        '08:00',
+                        this.handleTaskFieldChange
+                    )}
                 </Grid>
                 <Grid item xs>
-                    {this.renderField('end', '17:00')}
+                    {renderField(
+                        task,
+                        'end',
+                        '17:00',
+                        this.handleTaskFieldChange
+                    )}
                 </Grid>
                 <Grid item xs>
-                    {this.renderField('break_time', '00:00')}
+                    {renderField(
+                        task,
+                        'break_time',
+                        '00:00',
+                        this.handleTaskFieldChange
+                    )}
                 </Grid>
                 <Grid item xs className={classes.taskTotalCell}>
                     {task.total_hours}
