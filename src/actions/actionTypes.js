@@ -9,4 +9,6 @@ export const EDIT_PROJECT = 'EDIT_PROJECT';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export const FETCH_CLIENTS = 'FETCH_CLIENTS';
+export const ADD_CLIENT = 'ADD_CLIENT';
+export const EDIT_CLIENT = 'EDIT_CLIENT';
 export const DELETE_CLIENT = 'DELETE_CLIENT';

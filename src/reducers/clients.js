@@ -10,6 +10,16 @@ const reducer = (state = initialState, action) => {
             return {
                 clients: action.payload,
             };
+        case actionTypes.ADD_CLIENT:
+            const newClient = action.payload;
+            return state = {
+                clients: state.clients.concat(newClient),
+            };
+        case actionTypes.EDIT_CLIENT:
+            const editedClient = action.payload;
+            return state = {
+                clients: state.clients.map((client) => (client.id === editedClient.id ? editedClient : client)),
+            };
         case actionTypes.DELETE_CLIENT:
             const deletedClientId = action.payload;
             return state = {

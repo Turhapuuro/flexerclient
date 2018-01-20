@@ -145,6 +145,7 @@ class ProjectPage extends Component {
                             <TableCell>Description</TableCell>
                             <TableCell>Client</TableCell>
                             <TableCell></TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

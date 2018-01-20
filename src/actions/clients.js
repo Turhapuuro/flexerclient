@@ -13,6 +13,30 @@ export const fetchClients = () => {
     };
 };
 
+export const addClient = (client) => {
+    return dispatch => {
+        axios.post('/clients/', (client))
+            .then(response => {
+                dispatch({
+                    type: actionTypes.ADD_CLIENT,
+                    payload: response.data
+                })
+            });
+    }
+}
+
+export const editClient = (client) => {
+    return dispatch => {
+        axios.put(`/clients/${client.id}/`, (client))
+            .then(response => {
+                dispatch({
+                    type: actionTypes.EDIT_CLIENT,
+                    payload: response.data
+                })
+            });
+    }
+}
+
 export const deleteClient = (id) => {
     return dispatch => {
         axios.delete(`/clients/${id}`)
