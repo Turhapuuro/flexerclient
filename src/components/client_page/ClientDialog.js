@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
@@ -30,55 +30,68 @@ const styles = theme => ({
     },
 });
 
-class AddClientDialog extends Component {
+class ClientDialog extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            open: false
+        let {client} = props;
+
+        if (!client) {
+            client = {
+                name: '',
+                email: '',
+                phone: '',
+                address: '',
+                zip_code: '',
+                city: '',
+                business_id: '',
+            }
         }
+
+        this.state = {
+            client
+        }
+
+        this.handleClientFieldChange = this.handleClientFieldChange.bind(this);
     }
 
-    handleOpen = () => {
-        //this.setState({ open: true });
-        this.props.toggleModal('adding');
-    };
+    handleClientFieldChange(key, value) {
+        const { client } = this.state;
+        client[key] = value;
+        this.setState({ client });
+    }
 
-    handleClose = () => {
-        this.props.toggleModal('adding');
-    };
-
-    renderField(key, placeholder) {
-        const { onChange, client } = this.props;
+    renderField(key, placeholder, type = 'text') {
+        const { client } = this.state;
         const value = client[key];
-
+        
         return (
             <TextField
-                autoFocus
+                autoFocus={key === 'name'}
                 margin="dense"
                 id={key}
                 value={value}
                 placeholder={placeholder}
                 label={key.toUpperCase()}
-                type="text"
-                onChange={(e) => onChange(key, e.target.value)}
+                type={type}
+                onChange={(e) => this.handleClientFieldChange(key, e.target.value)}
                 fullWidth
             />
-        )
+        );
     }
 
     render() {
-        const { classes, onAddClientClick, open } = this.props;
+        const { classes, onSubmit, onClose } = this.props;
+        const { client } = this.state;
 
         return (
             <div className={classes.root}>
-                <Button onClick={this.handleOpen}>Add Client</Button>
                 <Dialog
-                    open={open}
-                    onClose={this.handleClose}
+                    open={true}
+                    onClose={onClose}
                     aria-labelledby="form-dialog-title"
                 >
-                    <DialogTitle id="form-dialog-title">Add new client</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Edit client</DialogTitle>
                     <DialogContent>
                         <Grid container>
                             <Grid item xs={12} sm={6}>
@@ -94,7 +107,7 @@ class AddClientDialog extends Component {
                                 {this.renderField('address', 'Street Address')}
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                {this.renderField('zip_code', 'ZIP Code')}
+                                {this.renderField('zip_code', 'ZIP Code', 'number')}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 {this.renderField('city', 'City')}
@@ -105,24 +118,24 @@ class AddClientDialog extends Component {
                         </Grid>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={onClose} color="primary">
                             Cancel
                         </Button>
                         <SaveButton
-                            onClick={onAddClientClick}
+                            onClick={() => onSubmit(client)}
                         />
                     </DialogActions>
                 </Dialog>
             </div>
-        )
+        );
     }
 };
 
-AddClientDialog.propTypes = {
+ClientDialog.propTypes = {
     classes: PropTypes.object.isRequired,
-    client: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onAddClientClick: PropTypes.func.isRequired,
+    client: PropTypes.object,
+    onSubmit: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles, { withThem: true })(AddClientDialog);
+export default withStyles(styles, { withThem: true })(ClientDialog);

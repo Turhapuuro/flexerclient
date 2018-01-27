@@ -12,12 +12,12 @@ import ExpansionPanel, {
     ExpansionPanelSummary,
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import Button from 'material-ui/Button';
 
 import PageContainer from '../common/PageContainer';
 import DeleteButton from '../common/buttons/DeleteButton';
-import AddClientDialog from './AddClientDialog';
 import EditButton from '../common/buttons/EditButton';
-import EditClientDialog from './EditClientDialog';
+import ClientDialog from './ClientDialog';
 
 
 const styles = theme => ({
@@ -38,39 +38,18 @@ const styles = theme => ({
     }
 });
 
-// const styles = theme => ({
-//     clientRow: {
-//         backgroundColor: blue[500],
-//     },
-//     projectRow: {
-//         backgroundColor: blue[100],
-//     },
-// });
-
 class ClientPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             expanded: null,
-            client: {
-                name: '',
-                email: '',
-                phone: '',
-                address: '',
-                zip_code: '',
-                city: '',
-                business_id: '',
-            },
-            adding: false,
-            editing: false,
+            open: false,
             editableClient: null,
         };
 
         this.handleCancel = this.handleCancel.bind(this);
-        this.handleClientFieldChange = this.handleClientFieldChange.bind(this);
         this.onAddClientClick = this.onAddClientClick.bind(this);
-        this.setEditableClient = this.setEditableClient.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.onSaveEditedClient = this.onSaveEditedClient.bind(this);
     }
@@ -84,20 +63,8 @@ class ClientPage extends Component {
     handleCancel() {
         this.setState({
             expanded: null,
-        })
+        });
     }
-
-    handleClientFieldChange(key, value) {
-        if(this.state.editableClient) {
-            const { editableClient } = this.state;
-            editableClient[key] = value;
-            this.setState({ editableClient })
-        } else {
-            const { client } = this.state;
-            client[key] = value;
-            this.setState({ client })
-        } 
-    };
 
     componentWillMount() {
         this.props.fetchProjects();
@@ -108,59 +75,42 @@ class ClientPage extends Component {
         return projects.filter((project) => (project.client === clientId));
     }
 
-    onAddClientClick() {
-        this.props.addClient(this.state.client);
-        this.toggleModal();
+    onAddClientClick(client) {
+        this.props.addClient(client);
+        this.toggleModal(false);
     }
 
-    toggleModal(key) {
-        // FIX: IF CLICK TO EDIT A CLIENT THEN CLOSE THE MODAL AND TRY TO ADD A CLIENT
-        // TYPING IN THE ADD CLIENT MODAL DOESN'T WORK
+    toggleModal(open, editableClient = null) {
         this.setState({
-            [key]: !this.state[key]
+            open,
+            editableClient
         });
     }
 
-    onSaveEditedClient() {
-        this.props.editClient(this.state.editableClient);
-        this.setState({
-            editing: false,
-            editableClient: null
-        })
-    }
-
-    setEditableClient(client) {
-        this.setState({
-            editing: !this.state.editing,
-            editableClient: {...client}
-        });
+    onSaveEditedClient(client) {
+        this.props.editClient(client);
+        this.toggleModal(false);
     }
 
     render() {
         const { classes, clients, projects, deleteClient } = this.props;
-        const { expanded, client, editing, editableClient, adding } = this.state;
-        let editingForm = null;
+        const { expanded, editableClient, open } = this.state;
+        let clientDialog = null;
 
-        if (editableClient) {
-            editingForm = <EditClientDialog 
-                                client={editableClient}
-                                onChange={this.handleClientFieldChange}
-                                onSaveEditedClient={this.onSaveEditedClient}
-                                open={editing}
-                                toggleModal={this.toggleModal}
-                            />
+        if (open) {
+            clientDialog = (
+                <ClientDialog
+                    onClose={() => this.toggleModal(false)}
+                    client={editableClient}
+                    onSubmit={editableClient ? this.onSaveEditedClient : this.onAddClientClick}
+                />
+            );
         }
 
         return (
             <PageContainer className={classes.root}>
-                {editingForm}
-                <AddClientDialog
-                    open={adding}
-                    toggleModal={this.toggleModal}
-                    client={client}
-                    onChange={this.handleClientFieldChange}
-                    onAddClientClick={this.onAddClientClick}
-                />
+                {clientDialog}
+                <Button onClick={() => this.toggleModal(true)}>Add Client</Button>
                 {clients.map(client => {
                     const clientProjects = this.getClientProjects(projects, client.id);
 
@@ -178,7 +128,7 @@ class ClientPage extends Component {
                                         <EditButton 
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                this.setEditableClient(client);
+                                                this.toggleModal(true, client);
                                             }}
                                         />
                                     </Grid>
@@ -213,7 +163,6 @@ class ClientPage extends Component {
                                     </TableBody>
                                 </Table>
                             </ExpansionPanelDetails>
-                            {editingForm}
                         </ExpansionPanel>
                     );
                 })}
