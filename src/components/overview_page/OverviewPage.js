@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { fetchTaskOverviewByMonth } from '../../actions/tasks';
+import { fetchProjects } from '../../actions/projects';
 import { withStyles } from 'material-ui/styles';
 
 import PageContainer from '../common/PageContainer';
@@ -12,10 +13,14 @@ import ProjectTable from './ProjectTable';
 
 //import { getRandomizedMonthlyProjectData } from './mock_task_data';
 
-
 const styles = theme => ({
     // Add component styles here.
 });
+
+function timeToDecimal(time) {
+    var [hours, minutes] = time.split(':');
+    return parseFloat(parseInt(hours, 10) + '.' + parseInt((minutes / 6) * 10, 10));
+}
 
 class OverviewPage extends Component {
     constructor() {
@@ -25,19 +30,30 @@ class OverviewPage extends Component {
     }
 
     getProjectTableData(data) {
-        const projectTableData = {};
-        data.forEach((dataObj) => {
-            Object.keys(dataObj).forEach((key) => {
-                // Collect all project names found in the data.
-                if (!['date', 'total'].includes(key)) {
-                    let total = projectTableData[key] && projectTableData[key].total
-                                ? projectTableData[key].total + dataObj[key] : dataObj[key];
-                    projectTableData[key] = { total };
+        const projectTableData = {
+                unassinged: 0
+            };
+        data.forEach(task => {
+            const foundProject = this.props.projects.find((project) => (
+                project.id === task.project_id
+            ));
+
+            if (foundProject){
+                if (projectTableData[foundProject.name]) {
+                    projectTableData[foundProject.name] += timeToDecimal(task.total_hours);
+                } else {
+                    projectTableData[foundProject.name] = timeToDecimal(task.total_hours);
                 }
-            });
+            } else {
+                projectTableData.unassinged += timeToDecimal(task.total_hours);
+            }
         });
 
         return projectTableData;
+    }
+
+    componentWillMount() {
+        this.props.fetchProjects();
     }
 
     getMonthTaskData(date) {
@@ -55,7 +71,6 @@ class OverviewPage extends Component {
 
     render() {
         const { tasks } = this.props;
-        console.log(tasks);
 
         return (
             <PageContainer>
@@ -74,12 +89,14 @@ OverviewPage.propTypes = {
 const mapStateToProps = (state) => ({
     // tasks: state.taskStore.tasks,
     tasks: state.taskStore.overviewTasks,
+    projects: state.projectStore.projects
 })
 
 const mapDispatchToProps = (dispatch) => {
     return {
         // this.props.fetchOverviewTasks();
-        fetchTaskOverviewByMonth: (data) => dispatch(fetchTaskOverviewByMonth(data))
+        fetchTaskOverviewByMonth: (data) => dispatch(fetchTaskOverviewByMonth(data)),
+        fetchProjects: () => dispatch(fetchProjects()),
     }
 }
 
