@@ -75,7 +75,7 @@ class OverviewPage extends Component {
         return (
             <PageContainer>
                 <MonthSelector requestMonthData={this.getMonthTaskData} />
-                {/*<TaskBarChart data={tasks} />*/}
+                <TaskBarChart data={tasks} />
                 <ProjectTable projectData={this.getProjectTableData(tasks)} />
             </PageContainer>
         )
