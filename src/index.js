@@ -11,7 +11,7 @@ import registerServiceWorker from './registerServiceWorker';
 import configureStore from './store';
 
 
-const history = createHistory();
+export const history = createHistory();
 const store = configureStore(history);
 
 ReactDOM.render((

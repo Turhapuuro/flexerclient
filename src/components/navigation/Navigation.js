@@ -21,6 +21,14 @@ const styles = (theme) => ({
 });
 
 class Navigation extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            activeNavItem: null,
+        };
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -33,7 +41,7 @@ class Navigation extends Component {
                 <NavHeader />
                 <List>
                     <Divider />
-                    <NavItem text='Tasks' link='/' />
+                    <NavItem text='Tasks' link='/' isActive/>
                     <NavItem text='Overview' link='/view/overview' />
                     <NavItem text='Projects' link='/view/projects' />
                     <NavItem text='Clients' link='/view/clients' />
