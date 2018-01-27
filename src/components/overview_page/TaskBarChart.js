@@ -66,12 +66,9 @@ const CustomTooltip = (props) => {
 
 class TaskBarChart extends Component {
     parseTaskPlottingData() {
-        const activeDate = moment(); // Use this.props.activeDate here
-        const dayCount = activeDate.daysInMonth();
-        const { data } = this.props;
-        console.log(data);
+        const { data, plotDayCount } = this.props;
 
-        const plotData = times(dayCount, (i) => ({
+        const plotData = times(plotDayCount, (i) => ({
             date: i + 1,
         }));
 

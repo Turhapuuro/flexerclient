@@ -26,27 +26,21 @@ class OverviewPage extends Component {
     constructor() {
         super();
 
+        this.state = {
+            selectedDate: moment(),
+        };
+
         this.getMonthTaskData = this.getMonthTaskData.bind(this);
     }
 
     getProjectTableData(data) {
-        const projectTableData = {
-                unassinged: 0
-            };
-        data.forEach(task => {
-            const foundProject = this.props.projects.find((project) => (
-                project.id === task.project_id
-            ));
+        const projectTableData = {};
 
-            if (foundProject){
-                if (projectTableData[foundProject.name]) {
-                    projectTableData[foundProject.name] += timeToDecimal(task.total_hours);
-                } else {
-                    projectTableData[foundProject.name] = timeToDecimal(task.total_hours);
-                }
-            } else {
-                projectTableData.unassinged += timeToDecimal(task.total_hours);
-            }
+        data.forEach(task => {
+            const foundProject = this.props.projects.find(({ id }) => (id === task.project_id));
+            const dataKey = foundProject ? foundProject.name : 'unassinged';
+            const projectTotal = (projectTableData[dataKey] || 0) + timeToDecimal(task.total_hours);
+            projectTableData[dataKey] = projectTotal;
         });
 
         return projectTableData;
@@ -56,26 +50,29 @@ class OverviewPage extends Component {
         this.props.fetchProjects();
     }
 
-    getMonthTaskData(date) {
-        // Fetch monthly task data here.
+    getMonthTaskData(selectedDate) {
+        const lastDay = selectedDate.daysInMonth();
 
-        // Change tasks to this.props.data when backend serves API data via redux.
-        const lastDay = date.daysInMonth();
-        // const tasks = getRandomizedMonthlyProjectData(dayCount);
-        //this.setState({ tasks });
         this.props.fetchTaskOverviewByMonth({
-            first_day: date.date(1).format('YYYY-MM-DD'),
-            last_day: date.date(lastDay).format('YYYY-MM-DD'),
+            first_day: selectedDate.date(1).format('YYYY-MM-DD'),
+            last_day: selectedDate.date(lastDay).format('YYYY-MM-DD'),
         });
+
+        this.setState({ selectedDate });
     }
 
     render() {
-        const { tasks } = this.props;
+        const { tasks, projects } = this.props;
+        const { selectedDate } = this.state;
 
         return (
             <PageContainer>
                 <MonthSelector requestMonthData={this.getMonthTaskData} />
-                <TaskBarChart data={tasks} />
+                <TaskBarChart
+                    data={tasks}
+                    projects={projects}
+                    plotDayCount={selectedDate.daysInMonth()}
+                />
                 <ProjectTable projectData={this.getProjectTableData(tasks)} />
             </PageContainer>
         )
@@ -87,14 +84,12 @@ OverviewPage.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    // tasks: state.taskStore.tasks,
     tasks: state.taskStore.overviewTasks,
     projects: state.projectStore.projects
 })
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // this.props.fetchOverviewTasks();
         fetchTaskOverviewByMonth: (data) => dispatch(fetchTaskOverviewByMonth(data)),
         fetchProjects: () => dispatch(fetchProjects()),
     }
