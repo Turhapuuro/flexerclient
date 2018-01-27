@@ -15,7 +15,7 @@ export const fetchTasks = () => {
 
 export const addTask = (task) => {
     return dispatch => {
-        axios.post('/tasks/', (task))
+        axios.post('/tasks/', task)
             .then(response => {
                 dispatch({
                     type: actionTypes.ADD_TASK,
@@ -43,6 +43,18 @@ export const deleteTask = (id) => {
             .then(response => {
                 dispatch({
                     type: actionTypes.DELETE_TASK,
+                    payload: response.data
+                })
+            })
+    }
+}
+
+export const fetchTaskOverviewByMonth = (data) => {
+    return dispatch => {
+        axios.post('/overview/', (data))
+            .then(response => {
+                dispatch({
+                    type: actionTypes.FETCH_TASK_OVERVIEW_BY_MONTH,
                     payload: response.data
                 })
             })

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import moment from 'moment';
-// import { fetchTasks, addTask, editTask, deleteTask } from '../../actions/tasks';
+import moment from 'moment';
+import { fetchTaskOverviewByMonth } from '../../actions/tasks';
 import { withStyles } from 'material-ui/styles';
 
 import PageContainer from '../common/PageContainer';
@@ -10,7 +10,7 @@ import MonthSelector from './MonthSelector';
 import TaskBarChart from './TaskBarChart';
 import ProjectTable from './ProjectTable';
 
-import { getRandomizedMonthlyProjectData } from './mock_task_data';
+//import { getRandomizedMonthlyProjectData } from './mock_task_data';
 
 
 const styles = theme => ({
@@ -21,9 +21,6 @@ class OverviewPage extends Component {
     constructor() {
         super();
 
-        this.state = {
-            mockData: getRandomizedMonthlyProjectData(),
-        };
         this.getMonthTaskData = this.getMonthTaskData.bind(this);
     }
 
@@ -45,22 +42,26 @@ class OverviewPage extends Component {
 
     getMonthTaskData(date) {
         // Fetch monthly task data here.
-        console.log(date);
 
-        // Change mockData to this.props.data when backend serves API data via redux.
-        const dayCount = date.daysInMonth();
-        const mockData = getRandomizedMonthlyProjectData(dayCount);
-        this.setState({ mockData });
+        // Change tasks to this.props.data when backend serves API data via redux.
+        const lastDay = date.daysInMonth();
+        // const tasks = getRandomizedMonthlyProjectData(dayCount);
+        //this.setState({ tasks });
+        this.props.fetchTaskOverviewByMonth({
+            first_day: date.date(1).format('YYYY-MM-DD'),
+            last_day: date.date(lastDay).format('YYYY-MM-DD'),
+        });
     }
 
     render() {
-        const { mockData } = this.state;
+        const { tasks } = this.props;
+        console.log(tasks);
 
         return (
             <PageContainer>
                 <MonthSelector requestMonthData={this.getMonthTaskData} />
-                <TaskBarChart data={mockData} />
-                <ProjectTable projectData={this.getProjectTableData(mockData)} />
+                {/*<TaskBarChart data={tasks} />*/}
+                <ProjectTable projectData={this.getProjectTableData(tasks)} />
             </PageContainer>
         )
     }
@@ -72,11 +73,13 @@ OverviewPage.propTypes = {
 
 const mapStateToProps = (state) => ({
     // tasks: state.taskStore.tasks,
+    tasks: state.taskStore.overviewTasks,
 })
 
 const mapDispatchToProps = (dispatch) => {
     return {
         // this.props.fetchOverviewTasks();
+        fetchTaskOverviewByMonth: (data) => dispatch(fetchTaskOverviewByMonth(data))
     }
 }
 
