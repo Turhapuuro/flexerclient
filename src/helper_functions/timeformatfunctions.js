@@ -9,7 +9,6 @@ const getDate = (date) => {
 }
 
 const hourAndMinuteStringToMinutes = (timeString) => {
-    console.log(timeString);
     const hoursAndMinutes = timeString.split(':');
     let totalMinutes = parseInt(hoursAndMinutes[1], 10) || 0;
     if (hoursAndMinutes[0]) {
