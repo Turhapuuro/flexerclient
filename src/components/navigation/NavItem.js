@@ -8,7 +8,6 @@ import { history } from '../../index';
 const navItemHoverStyle = {
     '&:hover': {
         backgroundColor: '#c17400',
-        textDecoration: 'none',
     },
 };
 
@@ -20,12 +19,6 @@ const styles = (theme) => ({
         ...navItemHoverStyle,
         backgroundColor: '#DA8300',
     },
-    noTextDecoration: {
-        textDecoration: 'none',
-        '&:hover': {
-            textDecoration: 'none',
-        }
-    },
 });
 
 const NavItem = (props) => {
@@ -34,11 +27,14 @@ const NavItem = (props) => {
     const { navItem, navItemActive } = classes;
 
     return (
-        <Link to={link} className={classes.noTextDecoration}>
-            <ListItem button classes={{ root: isActive ? navItemActive : navItem }}>
-                <ListItemText primary={text}/>
-            </ListItem>
-        </Link>
+        <ListItem
+            button
+            classes={{ root: isActive ? navItemActive : navItem }}
+            component={Link}
+            to={link}
+        >
+            <ListItemText primary={text}/>
+        </ListItem>
     );
 };
 
