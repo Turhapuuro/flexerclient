@@ -13,7 +13,6 @@ const styles = (theme) => ({
 class ProjectTable extends Component {
     render() {
         const { classes, projectData } = this.props;
-        console.log(projectData);
 
         return (
             <Table className={classes.projectTable}>

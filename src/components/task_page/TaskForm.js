@@ -92,7 +92,7 @@ class TaskForm extends Component {
             end,
             break_time,
             total_hours: total,
-            project_id
+            project_id: project_id === 'None' ? '' : project_id,
         });
 
         this.setState({

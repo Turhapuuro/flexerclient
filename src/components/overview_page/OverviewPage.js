@@ -5,22 +5,22 @@ import moment from 'moment';
 import { fetchTaskOverviewByMonth } from '../../actions/tasks';
 import { fetchProjects } from '../../actions/projects';
 import { withStyles } from 'material-ui/styles';
+import { times } from 'lodash';
 
 import PageContainer from '../common/PageContainer';
 import MonthSelector from './MonthSelector';
 import TaskBarChart from './TaskBarChart';
 import ProjectTable from './ProjectTable';
 
-//import { getRandomizedMonthlyProjectData } from './mock_task_data';
+import { timeToDecimal } from '../../helper_functions/timeformatfunctions';
+import { getRandomColor } from '../../helper_functions/colorfunctions';
+
 
 const styles = theme => ({
     // Add component styles here.
 });
 
-function timeToDecimal(time) {
-    var [hours, minutes] = time.split(':');
-    return parseFloat(parseInt(hours, 10) + '.' + parseInt((minutes / 6) * 10, 10));
-}
+const UNASSIGNED_PROJECT_NAME = 'unassigned';
 
 class OverviewPage extends Component {
     constructor() {
@@ -30,27 +30,54 @@ class OverviewPage extends Component {
             selectedDate: moment(),
         };
 
-        this.getMonthTaskData = this.getMonthTaskData.bind(this);
-    }
-
-    getProjectTableData(data) {
-        const projectTableData = {};
-
-        data.forEach(task => {
-            const foundProject = this.props.projects.find(({ id }) => (id === task.project_id));
-            const dataKey = foundProject ? foundProject.name : 'unassinged';
-            const projectTotal = (projectTableData[dataKey] || 0) + timeToDecimal(task.total_hours);
-            projectTableData[dataKey] = projectTotal;
-        });
-
-        return projectTableData;
+        this.fetchMonthTaskData = this.fetchMonthTaskData.bind(this);
     }
 
     componentWillMount() {
         this.props.fetchProjects();
     }
 
-    getMonthTaskData(selectedDate) {
+    getProjectTableData(tasks, projects) {
+        const projectTableData = {};
+
+        tasks.forEach(({ project_id, total_hours }) => {
+            const foundProject = this.findProjectById(projects, project_id);
+            const projectName = foundProject ? foundProject.name : UNASSIGNED_PROJECT_NAME;
+            const projectTotal = (projectTableData[projectName] || 0) + timeToDecimal(total_hours);
+            projectTableData[projectName] = projectTotal;
+        });
+
+        return projectTableData;
+    }
+
+    findProjectById(projects, projectId) {
+        return projects.find(({ id }) => (id === projectId));
+    }
+
+    getPlotData(tasks, projects) {
+        const plotDayCount = this.state.selectedDate.daysInMonth();
+        const plotData = times(plotDayCount, (i) => ({
+            date: i + 1,
+        }));
+
+        tasks.forEach(({ total_hours, project_id, date }) => {
+            const total = timeToDecimal(total_hours);
+            const taskDay = moment(date).format('DD');
+            const index = taskDay - 1;
+
+            const dayTotal = (plotData[index].total || 0) + total;
+            plotData[index].total = dayTotal;
+
+            const project = this.findProjectById(projects, project_id);
+            const projectName = project ? project.name : UNASSIGNED_PROJECT_NAME;
+            const projectTotal = (plotData[index][projectName] || 0) + total;
+            plotData[index][projectName] = projectTotal;
+        });
+
+        return plotData;
+    }
+
+    fetchMonthTaskData(selectedDate) {
         const lastDay = selectedDate.daysInMonth();
 
         this.props.fetchTaskOverviewByMonth({
@@ -58,22 +85,39 @@ class OverviewPage extends Component {
             last_day: selectedDate.date(lastDay).format('YYYY-MM-DD'),
         });
 
-        this.setState({ selectedDate });
+        this.setState({ selectedDate, isFetching: true });
+    }
+
+    getTaskProjects(plotData, projects) {
+        const taskProjects = [];
+        plotData.forEach((dataObj) => {
+            Object.keys(dataObj).forEach((projectName) => {
+                const projectExists = taskProjects.find(({ name }) => (name === projectName));
+                // Collect all project names found in the data and randomize a color for each.
+                // Project color could be stored in db in the future.
+                if (!projectExists && !['date', 'total'].includes(projectName)) {
+                    taskProjects.push({
+                        name: projectName,
+                        color: getRandomColor(),
+                    });
+                }
+            });
+        });
+        return taskProjects;
     }
 
     render() {
         const { tasks, projects } = this.props;
-        const { selectedDate } = this.state;
+        const plotData = this.getPlotData(tasks, projects);
 
         return (
             <PageContainer>
-                <MonthSelector requestMonthData={this.getMonthTaskData} />
+                <MonthSelector requestMonthData={this.fetchMonthTaskData} />
                 <TaskBarChart
-                    data={tasks}
-                    projects={projects}
-                    plotDayCount={selectedDate.daysInMonth()}
+                    plotData={plotData}
+                    taskProjects={this.getTaskProjects(plotData, projects)}
                 />
-                <ProjectTable projectData={this.getProjectTableData(tasks)} />
+                <ProjectTable projectData={this.getProjectTableData(tasks, projects)} />
             </PageContainer>
         )
     }
