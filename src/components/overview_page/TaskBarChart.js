@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 
@@ -33,9 +34,12 @@ const CustomTooltip = (props) => {
     return (
         <div className={classes.tooltip}>
             {projectNames.map((projectName) => {
+                const totalHours = moment.duration(tooltipData[projectName], 'hours');
                 return (
                     tooltipData[projectName]
-                    ? <div key={projectName}>{projectName}: {tooltipData[projectName]}h</div>
+                        ? <div key={projectName}>{projectName}: {totalHours._data.hours + ' h ' +
+                            totalHours._data.minutes + ' min'}
+                        </div>
                     : null
                 );
             })}

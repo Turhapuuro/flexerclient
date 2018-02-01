@@ -17,7 +17,7 @@ import Button from 'material-ui/Button';
 import PageContainer from '../common/PageContainer';
 import DeleteButton from '../common/buttons/DeleteButton';
 import EditButton from '../common/buttons/EditButton';
-import ClientDialog from './ClientDialog';
+import DialogContainer from '../common/DialogContainer';
 
 
 const styles = theme => ({
@@ -99,10 +99,12 @@ class ClientPage extends Component {
 
         if (open) {
             clientDialog = (
-                <ClientDialog
-                    onClose={() => this.toggleModal(false)}
-                    client={editableClient}
-                    onSubmit={editableClient ? this.onSaveEditedClient : this.onAddClientClick}
+                <DialogContainer 
+                    onClose = {() => this.toggleModal(false)}
+                    client = { editableClient }
+                    onSubmit = { editableClient ? this.onSaveEditedClient : this.onAddClientClick }
+                    title= {editableClient ? 'Edit Client' : 'Add Client' }
+                    isClient={true}
                 />
             );
         }

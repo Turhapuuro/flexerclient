@@ -8,12 +8,14 @@ import { withStyles } from 'material-ui/styles';
 
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 import { MenuItem } from 'material-ui/Menu';
+import Button from 'material-ui/Button';
 
 import PageContainer from '../common/PageContainer';
-import ProjectForm from './ProjectForm';
+//import ProjectForm from './ProjectForm';
 import DeleteButton from '../common/buttons/DeleteButton';
 import EditableProjectRow from './EditableProjectRow';
 import { orange } from 'material-ui/colors';
+import DialogContainer from '../common/DialogContainer';
 
 
 const styles = theme => ({
@@ -37,13 +39,15 @@ class ProjectPage extends Component {
         super(props);
 
         this.state = {
-            editableProject: null
+            editableProject: null,
+            open: false
         };
         
         this.renderRow = this.renderRow.bind(this);
         this.onFieldChange = this.onFieldChange.bind(this);
         this.onProjectSaveClick = this.onProjectSaveClick.bind(this);
         this.mapClientsToMenuItems = this.mapClientsToMenuItems.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
     }
 
     componentWillMount() {
@@ -130,14 +134,32 @@ class ProjectPage extends Component {
         this.setState({ editableProject: { ...project } });
     }
 
+    toggleModal(open) {
+        this.setState({
+            open
+        });
+    }
+
     render() {
         const { projects, clients, classes } = this.props;
+        const { open } = this.state;
+        let projectDialog = null;
+
+        if (open) {
+            projectDialog = (
+                <DialogContainer
+                    clients={clients}
+                    title={'Add Project'}
+                    onClose={() => this.toggleModal(false)}
+                    isClient={false}
+                />
+            )
+        }
 
         return (
             <PageContainer onClick={() => this.toggleEditableProject(null)}>
-                <ProjectForm
-                    clients={clients}
-                />
+                {projectDialog}
+                <Button onClick={() => this.toggleModal(true)}>Add Project</Button>
                 <Table className={classes.projectContainer}>
                     <TableHead>
                         <TableRow>

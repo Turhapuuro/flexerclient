@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
@@ -27,16 +28,19 @@ class ProjectTable extends Component {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {Object.keys(projectData).map((projectName) => (
-                        <TableRow key={projectName}>
-                            <TableCell>
-                                {projectName}
-                            </TableCell>
-                            <TableCell>
-                                {projectData[projectName]}
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {Object.keys(projectData).map((projectName) => {
+                        const totalHours = moment.duration(projectData[projectName], 'hours');
+                        return (
+                            <TableRow key={projectName}>
+                                <TableCell>
+                                    {projectName}
+                                </TableCell>
+                                <TableCell>
+                                    {totalHours._data.hours + ' h ' + totalHours._data.minutes + ' min'}
+                                </TableCell>
+                            </TableRow>
+                        )
+                    })}
                 </TableBody>
             </Table>
         );
