@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import {
-    DialogActions,
-    DialogContent,
-} from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
-import SaveButton from '../common/buttons/SaveButton';
+
+import DialogContainer from '../common/DialogContainer';
+
 
 const styles = theme => ({
     root: {
@@ -79,45 +76,39 @@ class ClientDialog extends Component {
     }
 
     render() {
-        const { onSubmit, onClose } = this.props;
         const { client } = this.state;
+        const { onSubmit, onClose, title } = this.props;
 
         return (
-            <div>
-                <DialogContent>
-                    <Grid container>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('name', 'Name')}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('email', 'Email Address')}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('phone', 'Phone Number')}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('address', 'Street Address')}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('zip_code', 'ZIP Code', 'number')}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            {this.renderField('city', 'City')}
-                        </Grid>
-                        <Grid item xs={12}>
-                            {this.renderField('business_id', 'Business ID')}
-                        </Grid>
+            <DialogContainer
+                onClose={onClose}
+                onSubmit={() => onSubmit(client)}
+                title={title}
+            >
+                <Grid container>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('name', 'Name')}
                     </Grid>
-                </DialogContent >
-                <DialogActions>
-                    <Button onClick={onClose} color="primary">
-                        Cancel
-                            </Button>
-                    <SaveButton
-                        onClick={() => onSubmit(client)}
-                    />
-                </DialogActions>
-            </div>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('email', 'Email Address')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('phone', 'Phone Number')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('address', 'Street Address')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('zip_code', 'ZIP Code', 'number')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {this.renderField('city', 'City')}
+                    </Grid>
+                    <Grid item xs={12}>
+                        {this.renderField('business_id', 'Business ID')}
+                    </Grid>
+                </Grid>
+            </DialogContainer>
         );
     }
 };
@@ -126,7 +117,6 @@ ClientDialog.propTypes = {
     classes: PropTypes.object.isRequired,
     client: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withThem: true })(ClientDialog);

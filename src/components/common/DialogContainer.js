@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
 import Dialog, {
+    DialogActions,
+    DialogContent,
     DialogTitle,
 } from 'material-ui/Dialog';
-import ClientDialog from '../client_page/ClientDialog';
-import ProjectDialog from '../project_page/ProjectDialog';
-
+import Button from 'material-ui/Button';
+import SaveButton from '../common/buttons/SaveButton';
 
 const styles = theme => ({
     root: {
@@ -28,7 +29,7 @@ const styles = theme => ({
 });
 
 const DialogContainer = (props) => {
-    const { onClose, classes, title, isClient } = props;
+    const { classes, onClose, onSubmit, title } = props;
 
     return (
         <div className={classes.root}>
@@ -38,11 +39,17 @@ const DialogContainer = (props) => {
                 aria-labelledby="form-dialog-title"
             >
                 <DialogTitle id="form-dialog-title">{title}</DialogTitle>
-                { isClient ? (
-                    <ClientDialog {...props} />
-                ) : (
-                    <ProjectDialog {...props} />
-                )}
+                    <DialogContent>
+                        {props.children}
+                    </DialogContent>
+                <DialogActions>
+                    <Button onClick={onClose} color="primary">
+                        Cancel
+                            </Button>
+                    <SaveButton
+                        onClick={onSubmit}
+                    />
+                </DialogActions>
             </Dialog>
         </div>
     )

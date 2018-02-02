@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import moment from 'moment';
 import { fetchProjects, deleteProject, editProject } from '../../actions/projects';
 import { fetchClients } from '../../actions/clients';
 import { withStyles } from 'material-ui/styles';
@@ -11,11 +10,11 @@ import { MenuItem } from 'material-ui/Menu';
 import Button from 'material-ui/Button';
 
 import PageContainer from '../common/PageContainer';
-//import ProjectForm from './ProjectForm';
 import DeleteButton from '../common/buttons/DeleteButton';
+import EditButton from '../common/buttons/EditButton';
 import EditableProjectRow from './EditableProjectRow';
 import { orange } from 'material-ui/colors';
-import DialogContainer from '../common/DialogContainer';
+import ProjectDialog from '../project_page/ProjectDialog';
 
 
 const styles = theme => ({
@@ -117,7 +116,14 @@ class ProjectPage extends Component {
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{project.description}</TableCell>
                 <TableCell>{this.getClientName(clients, project.client)}</TableCell>
-                <TableCell />
+                <TableCell>
+                    <EditButton 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            this.toggleModal(true, project);
+                        }}
+                    />
+                </TableCell>
                 <TableCell>
                     <DeleteButton
                         onClick={(e) => {
@@ -134,24 +140,25 @@ class ProjectPage extends Component {
         this.setState({ editableProject: { ...project } });
     }
 
-    toggleModal(open) {
+    toggleModal(open, editableProject = null) {
         this.setState({
-            open
+            open,
+            editableProject
         });
     }
 
     render() {
         const { projects, clients, classes } = this.props;
-        const { open } = this.state;
+        const { editableProject, open } = this.state;
         let projectDialog = null;
 
         if (open) {
             projectDialog = (
-                <DialogContainer
+                <ProjectDialog
                     clients={clients}
-                    title={'Add Project'}
+                    title={editableProject ? 'Edit Project' : 'Add Project'}
                     onClose={() => this.toggleModal(false)}
-                    isClient={false}
+                    project={editableProject}
                 />
             )
         }

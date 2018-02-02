@@ -3,18 +3,13 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
 
-import {
-    DialogActions,
-    DialogContent,
-} from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import { addProject } from '../../actions/projects';
 
-import AddButton from '../common/buttons/AddButton';
+import DialogContainer from '../common/DialogContainer';
 
 const styles = theme => ({
     root: {
@@ -56,6 +51,7 @@ class ProjectDialog extends Component {
         }
 
         this.handleProjectFieldChange = this.handleProjectFieldChange.bind(this);
+        this.onAddProjectClick = this.onAddProjectClick.bind(this);
     }
 
     handleProjectFieldChange(key, value) {
@@ -121,53 +117,47 @@ class ProjectDialog extends Component {
     }
 
     render() {
-        const { onClose, clients, classes } = this.props;
+        const { onClose, clients, title } = this.props;
         const { project } = this.state;
 
         return (
-            <div className={classes.root}>
-                <DialogContent>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            {this.renderField('name', 'Project name')}
-                        </Grid>
-                        <Grid item xs={12}>
-                            {this.renderField('description', 'Enter description...')}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Select
-                                value={project.client}
-                                name="client"
-                                fullWidth={true}
-                                onChange={(e) => this.handleProjectFieldChange('client', e.target.value)}
-                            >
-                                <MenuItem
-                                    value=""
-                                    key="empty_select"
-                                >
-                                    None
-                                </MenuItem>
-                                {clients.map(client => (
-                                    <MenuItem
-                                        value={client.id}
-                                        key={client.id}
-                                    >
-                                        {client.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </Grid>
+            <DialogContainer
+                onClose={onClose}
+                onSubmit={this.onAddProjectClick}
+                title={title}
+            >
+                <Grid container>
+                    <Grid item xs={12}>
+                        {this.renderField('name', 'Project name')}
                     </Grid>
-                </DialogContent >
-                <DialogActions>
-                    <Button onClick={onClose} color="primary">
-                        Cancel
-                    </Button>
-                    <AddButton 
-                        onClick={() => this.onAddProjectClick()} 
-                    />
-                </DialogActions>
-            </div>
+                    <Grid item xs={12}>
+                        {this.renderField('description', 'Enter description...')}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Select
+                            value={project.client}
+                            name="client"
+                            fullWidth={true}
+                            onChange={(e) => this.handleProjectFieldChange('client', e.target.value)}
+                        >
+                            <MenuItem
+                                value=""
+                                key="empty_select"
+                            >
+                                None
+                            </MenuItem>
+                            {clients.map(client => (
+                                <MenuItem
+                                    value={client.id}
+                                    key={client.id}
+                                >
+                                    {client.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                </Grid>
+            </DialogContainer>
         );
     }
 };
