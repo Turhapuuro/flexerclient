@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchProjects, deleteProject, editProject } from '../../actions/projects';
+import { fetchProjects, addProject, deleteProject, editProject } from '../../actions/projects';
 import { fetchClients } from '../../actions/clients';
 import { withStyles } from 'material-ui/styles';
 
@@ -44,7 +44,8 @@ class ProjectPage extends Component {
         
         this.renderRow = this.renderRow.bind(this);
         this.onFieldChange = this.onFieldChange.bind(this);
-        this.onProjectSaveClick = this.onProjectSaveClick.bind(this);
+        this.onSaveProjectClick = this.onSaveProjectClick.bind(this);
+        this.onAddProjectClick = this.onAddProjectClick.bind(this);
         this.mapClientsToMenuItems = this.mapClientsToMenuItems.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
     }
@@ -65,13 +66,6 @@ class ProjectPage extends Component {
         this.setState({ editableProject });
     }
 
-    onProjectSaveClick() {
-        this.props.editProject(this.state.editableProject);
-        this.setState({
-            editableProject: null
-        });
-    }
-
     mapClientsToMenuItems() {
         const { clients } = this.props;
         return (
@@ -86,6 +80,16 @@ class ProjectPage extends Component {
         );
     }
 
+    onAddProjectClick(project) {
+        this.props.addProject(project);
+        this.toggleModal(false);
+    }
+
+    onSaveProjectClick(project) {
+        this.props.editProject(project);
+        this.toggleModal(false);
+    }
+
     renderRow( project) {
         const { classes, clients, deleteProject } = this.props;
         const { editableProject } = this.state;
@@ -98,7 +102,7 @@ class ProjectPage extends Component {
                     onChange={this.onFieldChange}
                     clients={clients}
                     mapClients={this.mapClientsToMenuItems}
-                    onClick={this.onProjectSaveClick}
+                    onClick={this.onSaveProjectClick}
                     deleteProject={deleteProject}
                 />
             );
@@ -107,10 +111,6 @@ class ProjectPage extends Component {
         return (
             <TableRow
                 key={project.id}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    this.toggleEditableProject(project);
-                }}
                 className={classes.projectGridContainer}
             >
                 <TableCell>{project.name}</TableCell>
@@ -135,10 +135,6 @@ class ProjectPage extends Component {
             </TableRow>
         );
     }
-    
-    toggleEditableProject(project) {
-        this.setState({ editableProject: { ...project } });
-    }
 
     toggleModal(open, editableProject = null) {
         this.setState({
@@ -158,13 +154,14 @@ class ProjectPage extends Component {
                     clients={clients}
                     title={editableProject ? 'Edit Project' : 'Add Project'}
                     onClose={() => this.toggleModal(false)}
+                    onSubmit={editableProject ? this.onSaveProjectClick : this.onAddProjectClick}
                     project={editableProject}
                 />
             )
         }
 
         return (
-            <PageContainer onClick={() => this.toggleEditableProject(null)}>
+            <PageContainer>
                 {projectDialog}
                 <Button onClick={() => this.toggleModal(true)}>Add Project</Button>
                 <Table className={classes.projectContainer}>
@@ -203,6 +200,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchProjects: () => dispatch(fetchProjects()),
         fetchClients: () => dispatch(fetchClients()),
+        addProject: (project) => dispatch(addProject(project)),
         deleteProject: (id) => dispatch(deleteProject(id)),
         editProject: (editedProject) => dispatch(editProject(editedProject)),
     }

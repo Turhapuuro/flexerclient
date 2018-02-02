@@ -7,7 +7,7 @@ import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
-import { addProject } from '../../actions/projects';
+import { addProject, editProject } from '../../actions/projects';
 
 import DialogContainer from '../common/DialogContainer';
 
@@ -41,17 +41,18 @@ class ProjectDialog extends Component {
         let { project } = props;
 
         if (!project) {
-            this.state = {
-                project: {
-                    name: '',
-                    description: '',
-                    client: '',
-                }
+            project = {
+                name: '',
+                description: '',
+                client: '',
             }
         }
 
+        this.state = {
+            project
+        }
+
         this.handleProjectFieldChange = this.handleProjectFieldChange.bind(this);
-        this.onAddProjectClick = this.onAddProjectClick.bind(this);
     }
 
     handleProjectFieldChange(key, value) {
@@ -60,25 +61,6 @@ class ProjectDialog extends Component {
         this.setState({ project });
     }
 
-    onAddProjectClick() {
-        const { name, description, client } = this.state.project;
-
-        this.props.addProject({
-            name,
-            description,
-            client
-        });
-
-        this.setState({
-            project: {
-                name: '',
-                description: '',
-                client: '',
-            }
-        });
-
-        this.props.onClose();
-    }
 
     renderField(key, placeholder, type = 'text') {
         const { project } = this.state;
@@ -117,13 +99,13 @@ class ProjectDialog extends Component {
     }
 
     render() {
-        const { onClose, clients, title } = this.props;
+        const { onClose, onSubmit, clients, title } = this.props;
         const { project } = this.state;
 
         return (
             <DialogContainer
                 onClose={onClose}
-                onSubmit={this.onAddProjectClick}
+                onSubmit={() => onSubmit(project)}
                 title={title}
             >
                 <Grid container>
@@ -171,6 +153,7 @@ ProjectDialog.propTypes = {
 const mapDispatchToProps = (dispatch) => {
     return {
         addProject: (project) => dispatch(addProject(project)),
+        editProject: (project) => dispatch(editProject(project)),
     }
 }
 
