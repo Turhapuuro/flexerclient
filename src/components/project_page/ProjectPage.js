@@ -6,13 +6,11 @@ import { fetchClients } from '../../actions/clients';
 import { withStyles } from 'material-ui/styles';
 
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
-import { MenuItem } from 'material-ui/Menu';
 import Button from 'material-ui/Button';
 
 import PageContainer from '../common/PageContainer';
 import DeleteButton from '../common/buttons/DeleteButton';
 import EditButton from '../common/buttons/EditButton';
-import EditableProjectRow from './EditableProjectRow';
 import { orange } from 'material-ui/colors';
 import ProjectDialog from '../project_page/ProjectDialog';
 
@@ -46,7 +44,6 @@ class ProjectPage extends Component {
         this.onFieldChange = this.onFieldChange.bind(this);
         this.onSaveProjectClick = this.onSaveProjectClick.bind(this);
         this.onAddProjectClick = this.onAddProjectClick.bind(this);
-        this.mapClientsToMenuItems = this.mapClientsToMenuItems.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
     }
 
@@ -66,20 +63,6 @@ class ProjectPage extends Component {
         this.setState({ editableProject });
     }
 
-    mapClientsToMenuItems() {
-        const { clients } = this.props;
-        return (
-            clients.map(client => (
-                <MenuItem
-                    value={client.id}
-                    key={client.id}
-                >
-                    {client.name}
-                </MenuItem>
-            ))
-        );
-    }
-
     onAddProjectClick(project) {
         this.props.addProject(project);
         this.toggleModal(false);
@@ -92,21 +75,6 @@ class ProjectPage extends Component {
 
     renderRow( project) {
         const { classes, clients, deleteProject } = this.props;
-        const { editableProject } = this.state;
-
-        if(editableProject && editableProject.id === project.id) {
-            return (
-                <EditableProjectRow
-                    key={project.id}
-                    project={editableProject}
-                    onChange={this.onFieldChange}
-                    clients={clients}
-                    mapClients={this.mapClientsToMenuItems}
-                    onClick={this.onSaveProjectClick}
-                    deleteProject={deleteProject}
-                />
-            );
-        }
 
         return (
             <TableRow

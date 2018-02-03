@@ -5,6 +5,10 @@ export const formatHours = (date) => {
     return moment(date).format('HH:mm');
 };
 
+export const formatProjectTotalHours = (time) => {
+    return moment.duration(time, 'hours');
+};
+
 export const timeToDecimal = (time) => {
     const [hours, minutes] = time.split(':');
     return parseFloat(parseInt(hours, 10) + '.' + parseInt((minutes / 6) * 10, 10));

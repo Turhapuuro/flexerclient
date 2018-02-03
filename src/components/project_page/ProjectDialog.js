@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import { connect } from 'react-redux';
 
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
-import { addProject, editProject } from '../../actions/projects';
 
 import DialogContainer from '../common/DialogContainer';
 
@@ -48,9 +46,13 @@ class ProjectDialog extends Component {
             }
         }
 
+        if (!project.client){
+            project.client = '';
+        }
+
         this.state = {
             project
-        }
+        };
 
         this.handleProjectFieldChange = this.handleProjectFieldChange.bind(this);
     }
@@ -150,11 +152,4 @@ ProjectDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addProject: (project) => dispatch(addProject(project)),
-        editProject: (project) => dispatch(editProject(project)),
-    }
-}
-
-export default withStyles(styles, { withThem: true })(connect(null, mapDispatchToProps)(ProjectDialog));
+export default withStyles(styles, { withThem: true })(ProjectDialog);

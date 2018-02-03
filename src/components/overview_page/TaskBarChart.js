@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LabelList, Label } from 'recharts';
+
+import { formatProjectTotalHours } from '../../helper_functions/timeformatfunctions';
 
 
 const styles = (theme) => ({
@@ -34,7 +35,8 @@ const CustomTooltip = (props) => {
     return (
         <div className={classes.tooltip}>
             {projectNames.map((projectName) => {
-                const totalHours = moment.duration(tooltipData[projectName], 'hours');
+                const totalHours = formatProjectTotalHours(tooltipData[projectName]);
+
                 return (
                     tooltipData[projectName]
                         ? <div key={projectName}>{projectName}: {totalHours._data.hours + ' h ' +
