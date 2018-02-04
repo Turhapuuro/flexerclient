@@ -61,8 +61,8 @@ class ProjectDialog extends Component {
     static requiredFields = {
         name: {
             defaultError: 'Project name is required.',
-            minCharLength: 5,
-            customError: 'Project name should be at least 5 characters long.',
+            minCharLength: 2,
+            customError: 'Project name should be at least 2 characters long.',
         },
     };
 
@@ -154,12 +154,9 @@ class ProjectDialog extends Component {
                             >
                                 None
                             </MenuItem>
-                            {clients.map(client => (
-                                <MenuItem
-                                    value={client.id}
-                                    key={client.id}
-                                >
-                                    {client.name}
+                            {clients.map(({ id, name }) => (
+                                <MenuItem key={id} value={id}>
+                                    {name}
                                 </MenuItem>
                             ))}
                         </Select>
