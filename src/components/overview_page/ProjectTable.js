@@ -4,6 +4,8 @@ import { formatProjectTotalHours } from '../../helper_functions/timeformatfuncti
 import { withStyles } from 'material-ui/styles';
 import Table, { TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
+import { getProjectTimeString } from './TaskBarChart';
+
 
 const styles = (theme) => ({
     projectTable: {
@@ -39,7 +41,7 @@ class ProjectTable extends Component {
                                     {projectName}
                                 </TableCell>
                                 <TableCell>
-                                    {totalHours._data.hours + ' h ' + totalHours._data.minutes + ' min'}
+                                    {getProjectTimeString(totalHours._data)}
                                 </TableCell>
                             </TableRow>
                         )

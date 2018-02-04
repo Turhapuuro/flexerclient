@@ -23,6 +23,10 @@ const styles = (theme) => ({
     },
 });
 
+export const getProjectTimeString = ({ hours, minutes }) => {
+    return `${hours >= 1 ? `${hours}h ` : ''}${minutes > 0 ? `${minutes}min` : ''}`;
+};
+
 const CustomTooltip = (props) => {
     const { payload } = props;
     if (!props.active || !payload || !payload[0]) {
@@ -38,9 +42,9 @@ const CustomTooltip = (props) => {
                 const totalHours = formatProjectTotalHours(tooltipData[projectName]);
 
                 return (
-                    tooltipData[projectName]
-                        ? <div key={projectName}>{projectName}: {totalHours._data.hours + ' h ' +
-                            totalHours._data.minutes + ' min'}
+                    tooltipData[projectName] ?
+                        <div key={projectName}>
+                            {`${projectName}: ${getProjectTimeString(totalHours._data)}`}
                         </div>
                     : null
                 );
