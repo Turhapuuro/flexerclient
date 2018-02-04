@@ -9,6 +9,7 @@ import { MenuItem } from 'material-ui/Menu';
 
 import DialogContainer from '../common/DialogContainer';
 
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -51,11 +52,19 @@ class ProjectDialog extends Component {
         }
 
         this.state = {
-            project
+            project,
         };
 
         this.handleProjectFieldChange = this.handleProjectFieldChange.bind(this);
     }
+
+    static requiredFields = {
+        name: {
+            defaultError: 'Project name is required.',
+            minCharLength: 5,
+            customError: 'Project name should be at least 5 characters long.',
+        },
+    };
 
     handleProjectFieldChange(key, value) {
         const { project } = this.state;
@@ -63,41 +72,56 @@ class ProjectDialog extends Component {
         this.setState({ project });
     }
 
+    static checkForError(key, value) {
+        const { requiredFields } = ProjectDialog;
+        const requiredFieldKeys = Object.keys(requiredFields);
+        const isRequiredField = requiredFieldKeys.includes(key);
+
+        if (!isRequiredField) {
+            return { isError: false, helperText: '' };
+        }
+
+        const isDefaultError = !value.length;
+        const isCustomError = requiredFields[key].minCharLength > value.length;
+        const isError = isDefaultError || isCustomError;
+
+        let helperText = '';
+        if (isError) {
+            helperText = isDefaultError ? requiredFields[key].defaultError : requiredFields[key].customError;
+        }
+
+        return { isError, helperText };
+    }
 
     renderField(key, placeholder, type = 'text') {
         const { project } = this.state;
         const { classes } = this.props;
         const value = project[key];
 
+        const { isError, helperText } = ProjectDialog.checkForError(key, value);
+
+        let fieldAttributes = {
+            value,
+            placeholder,
+            type,
+            helperText,
+            error: isError,
+            fullWidth: true,
+            margin: 'dense',
+            onChange: (e) => this.handleProjectFieldChange(key, e.target.value),
+            autoFocus: (key === 'name'),
+        };
+
         if (key === 'description'){
-            return (
-                <TextField
-                    margin="dense"
-                    id={key}
-                    value={value}
-                    placeholder={placeholder}
-                    type={type}
-                    onChange={(e) => this.handleProjectFieldChange(key, e.target.value)}
-                    fullWidth
-                    multiline
-                    rows="4"
-                    className={classes.textarea}
-                />
-            )
+            fieldAttributes = {
+                ...fieldAttributes,
+                multiline: true,
+                rows: 4,
+                className: classes.textarea,
+            }
         }
 
-        return (
-            <TextField
-                autoFocus={key === 'name'}
-                margin="dense"
-                id={key}
-                value={value}
-                placeholder={placeholder}
-                type={type}
-                onChange={(e) => this.handleProjectFieldChange(key, e.target.value)}
-                fullWidth
-            />
-        );
+        return <TextField {...fieldAttributes} />;
     }
 
     render() {
