@@ -54,7 +54,7 @@ class TaskPage extends Component {
 
     getInitialTaskState() {
         return {
-            name: 'pottu',
+            name: '',
             date: moment(),
             start: '',
             end: '',

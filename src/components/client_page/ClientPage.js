@@ -35,6 +35,10 @@ const styles = theme => ({
     },
     clientCell: {
         display: 'inline'
+    },
+    addClientButton: {
+        color: '#4caf50',
+        border: '1px solid #4caf50',
     }
 });
 
@@ -111,7 +115,9 @@ class ClientPage extends Component {
         return (
             <PageContainer className={classes.root}>
                 {clientDialog}
-                <Button onClick={() => this.toggleModal(true)}>Add Client</Button>
+                <Button classes={{ root: classes.addClientButton }} onClick={() => this.toggleModal(true)}>
+                    Add Client
+                </Button>
                 {clients.map(client => {
                     const clientProjects = this.getClientProjects(projects, client.id);
 
