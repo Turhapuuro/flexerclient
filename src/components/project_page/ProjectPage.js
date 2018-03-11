@@ -29,6 +29,10 @@ const styles = theme => ({
             backgroundColor: orange[100],
         }
     },
+    addProjectButton: {
+        color: '#4caf50',
+        border: '1px solid #4caf50',
+    }
 });
 
 class ProjectPage extends Component {
@@ -131,7 +135,9 @@ class ProjectPage extends Component {
         return (
             <PageContainer>
                 {projectDialog}
-                <Button onClick={() => this.toggleModal(true)}>Add Project</Button>
+                <Button classes={{ root: classes.addProjectButton }} onClick={() => this.toggleModal(true)}>
+                    Add Project
+                </Button>
                 <Table className={classes.projectContainer}>
                     <TableHead>
                         <TableRow>

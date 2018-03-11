@@ -112,7 +112,7 @@ class ProjectDialog extends Component {
             autoFocus: (key === 'name'),
         };
 
-        if (key === 'description'){
+        if (key === 'description') {
             fieldAttributes = {
                 ...fieldAttributes,
                 multiline: true,
